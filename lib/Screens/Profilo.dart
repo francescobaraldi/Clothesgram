@@ -470,7 +470,7 @@ class _ProfiloState extends State<Profilo> {
         navigationBar: CupertinoNavigationBar(
           middle: Text("I miei dati"),
           leading: CupertinoButton(
-            child: Icon(Icons.arrow_back_ios),
+            child: Icon(CupertinoIcons.back),
             onPressed: () async {
               snapshot = await _database
                   .collection('utenti')
@@ -485,126 +485,94 @@ class _ProfiloState extends State<Profilo> {
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.all(16),
-              ListView(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: CupertinoTextField(
-                      prefix: Text("Nome"),
-                      controller: nomeController,
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: CupertinoTextField(
+                    enabled: modificheOn,
+                    prefix: Text("Nome"),
+                    controller: nomeController,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: CupertinoTextField(
+                    enabled: modificheOn,
+                    prefix: Text("Cognome"),
+                    controller: cognomeController,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: CupertinoTextField(
+                    enabled: modificheOn,
+                    prefix: Text("Email"),
+                    controller: emailController,
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Data di nascita"),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: CupertinoTextField(
-                      prefix: Text("Cognome"),
-                      controller: cognomeController,
+                    Spacer(),
+                    Text((utente.data_nascita == null)
+                        ? "--/--/----"
+                        : widget._df.format(utente.data_nascita)),
+                    CupertinoButton(
+                      child: Icon(CupertinoIcons.clock_solid),
+                      onPressed: modificheOn == false
+                          ? null
+                          : () {
+                              getDate(context);
+                            },
                     ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: CupertinoTextField(
+                    enabled: modificheOn,
+                    prefix: Text("Username"),
+                    controller: usernameController,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: CupertinoTextField(
-                      prefix: Text("Email"),
-                      controller: emailController,
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CupertinoTextField(
+                    enabled: modificheOn,
+                    prefix: Text("Password"),
+                    controller: passwordController,
+                    obscureText: true,
                   ),
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Data di nascita"),
-                      ),
-                      Spacer(),
-                      Text((utente.data_nascita == null)
-                          ? "--/--/----"
-                          : widget._df.format(utente.data_nascita)),
-                      CupertinoButton(
-                        child: Icon(CupertinoIcons.clock_solid),
-                        onPressed: () => getDate(context),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: CupertinoTextField(
-                      prefix: Text("Username"),
-                      controller: usernameController,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: <Widget>[
-                        CupertinoTextField(
-                          prefix: Text("Password"),
-                          controller: passwordController,
-                          obscureText: true,
-                        ),
-                        CupertinoButton(
-                          child: visibility_off
-                              ? Icon(Icons.visibility_off)
-                              : Icon(Icons.visibility),
-                          onPressed: () {
-                            setState(() {
-                              visibility_off = !visibility_off;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  CupertinoButton(
-                    child: Text(button),
-                    onPressed: () async {
-                      setState(() {
-                        if (button == "Modifica") {
-                          button = "Salva";
-                          modificheOn = true;
-                        } else if (button == "Salva") {
-                          button = "Modifica";
-                          modificheOn = false;
-                        }
-                      });
+                ),
+                CupertinoButton(
+                  child: Text(button),
+                  onPressed: () async {
+                    setState(() {
                       if (button == "Modifica") {
-                        controllaDati();
-                        utente.data_nascita =
-                            utenteAppoggio.data_nascita == null
-                                ? utente.data_nascita
-                                : utenteAppoggio.data_nascita;
-                        if (utente.email != emailController.text) {
-                          snapshot = await _database
-                              .collection('utenti')
-                              .where('email', isEqualTo: emailController.text)
-                              .get();
-                          documentSnapshotList = snapshot.docs;
-                          if (documentSnapshotList.isNotEmpty) {
-                            showDialogAlreadyExist();
-                          } else {
-                            utente.nome = nomeController.text;
-                            utente.cognome = cognomeController.text;
-                            utente.email = emailController.text;
-                            utente.username = usernameController.text;
-                            utente.password = passwordController.text;
-                            try {
-                              _database
-                                  .collection('utenti')
-                                  .doc(utente.documentId)
-                                  .update({
-                                'nome': utente.nome,
-                                'cognome': utente.cognome,
-                                'email': utente.email,
-                                'data_nascita':
-                                    Timestamp.fromDate(utente.data_nascita),
-                                'username': utente.username,
-                                'password': utente.password
-                              });
-                            } catch (e) {
-                              print(e.toString());
-                            }
-                            User user = auth.currentUser;
-                            await user.updateEmail(utente.email);
-                            await user.updatePassword(utente.password);
-                          }
+                        button = "Salva";
+                        modificheOn = true;
+                      } else if (button == "Salva") {
+                        button = "Modifica";
+                        modificheOn = false;
+                      }
+                    });
+                    if (button == "Modifica") {
+                      controllaDati();
+                      utente.data_nascita = utenteAppoggio.data_nascita == null
+                          ? utente.data_nascita
+                          : utenteAppoggio.data_nascita;
+                      if (utente.email != emailController.text) {
+                        snapshot = await _database
+                            .collection('utenti')
+                            .where('email', isEqualTo: emailController.text)
+                            .get();
+                        documentSnapshotList = snapshot.docs;
+                        if (documentSnapshotList.isNotEmpty) {
+                          showDialogAlreadyExist();
                         } else {
                           utente.nome = nomeController.text;
                           utente.cognome = cognomeController.text;
@@ -619,7 +587,8 @@ class _ProfiloState extends State<Profilo> {
                               'nome': utente.nome,
                               'cognome': utente.cognome,
                               'email': utente.email,
-                              'data_nascita': utente.data_nascita,
+                              'data_nascita':
+                                  Timestamp.fromDate(utente.data_nascita),
                               'username': utente.username,
                               'password': utente.password
                             });
@@ -627,13 +596,38 @@ class _ProfiloState extends State<Profilo> {
                             print(e.toString());
                           }
                           User user = auth.currentUser;
+                          await user.updateEmail(utente.email);
                           await user.updatePassword(utente.password);
                         }
+                      } else {
+                        utente.nome = nomeController.text;
+                        utente.cognome = cognomeController.text;
+                        utente.email = emailController.text;
+                        utente.username = usernameController.text;
+                        utente.password = passwordController.text;
+                        try {
+                          _database
+                              .collection('utenti')
+                              .doc(utente.documentId)
+                              .update({
+                            'nome': utente.nome,
+                            'cognome': utente.cognome,
+                            'email': utente.email,
+                            'data_nascita': utente.data_nascita,
+                            'username': utente.username,
+                            'password': utente.password
+                          });
+                        } catch (e) {
+                          print(e.toString());
+                        }
+                        User user = auth.currentUser;
+                        await user.updatePassword(utente.password);
                       }
-                    },
-                  ),
-                ],
-              ),
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       );
