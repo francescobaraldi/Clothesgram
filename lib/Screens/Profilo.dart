@@ -306,7 +306,7 @@ class _ProfiloState extends State<Profilo> {
                         else if (value.length < 5) return "Email non valida";
                         return null;
                       },
-                      enabled: modificheOn,
+                      enabled: false,
                     ),
                   ),
                   ListTile(
@@ -448,11 +448,10 @@ class _ProfiloState extends State<Profilo> {
                             await user.updatePassword(utente.password);
                           }
                         }
-                        snapshot = await _database
+                        documentSnapshot = await _database
                             .collection('utenti')
-                            .where('email', isEqualTo: utente.email)
+                            .doc(utente.documentId)
                             .get();
-                        documentSnapshot = snapshot.docs.first;
                         Navigator.pushNamed(context, HomePage.routeName,
                             arguments: documentSnapshot);
                       }
@@ -506,7 +505,7 @@ class _ProfiloState extends State<Profilo> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    enabled: modificheOn,
+                    enabled: false,
                     prefix: Text("Email"),
                     controller: emailController,
                   ),
@@ -623,6 +622,12 @@ class _ProfiloState extends State<Profilo> {
                         User user = auth.currentUser;
                         await user.updatePassword(utente.password);
                       }
+                      documentSnapshot = await _database
+                          .collection('utenti')
+                          .doc(utente.documentId)
+                          .get();
+                      Navigator.pushNamed(context, HomePage.routeName,
+                          arguments: documentSnapshot);
                     }
                   },
                 ),
