@@ -1,3 +1,4 @@
+import 'package:Applicazione/Screens/DatiLogin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: Icon(Icons.settings),
             title: Text("Impostazioni"),
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(context, DatiLogin.routeName),
           ),
           ListTile(
             leading: Icon(Icons.exit_to_app),
@@ -109,7 +110,8 @@ class _HomePageState extends State<HomePage> {
             ),
             CupertinoActionSheetAction(
               child: Text("Impostazioni"),
-              onPressed: () {},
+              onPressed: () =>
+                  Navigator.pushNamed(context, DatiLogin.routeName),
             ),
             CupertinoActionSheetAction(
               child: Text("Esci dall'account",

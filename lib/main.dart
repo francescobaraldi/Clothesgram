@@ -1,3 +1,4 @@
+import 'package:Applicazione/Screens/DatiLogin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
           ConfermaRegistrazione.routeName: (context) => ConfermaRegistrazione(),
           HomePage.routeName: (context) => HomePage(title: "Nome App"),
           Profilo.routeName: (context) => Profilo(title: "Profilo"),
+          DatiLogin.routeName: (context) => DatiLogin(title: "Impostazioni"),
         },
       );
     }
@@ -46,6 +48,7 @@ class MyApp extends StatelessWidget {
           ConfermaRegistrazione.routeName: (context) => ConfermaRegistrazione(),
           HomePage.routeName: (context) => HomePage(title: "Nome App"),
           Profilo.routeName: (context) => Profilo(title: "Profilo"),
+          DatiLogin.routeName: (context) => DatiLogin(title: "Impostazioni"),
         },
       );
     }

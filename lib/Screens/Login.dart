@@ -18,7 +18,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool isLoginDisabled = true;
   TextEditingController emailController = TextEditingController();
-  TextEditingController pwdController = TextEditingController();
+  TextEditingController emailRecuperoController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   FirebaseFirestore _database;
   QuerySnapshot snapshot;
@@ -38,7 +39,7 @@ class _LoginState extends State<Login> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Attenzione"),
-              content: Text("Non esiste un account con questa mail"),
+              content: Text("Non esiste un account con questa email"),
               actions: <Widget>[
                 FlatButton(
                   child: Text("Ok"),
@@ -57,7 +58,7 @@ class _LoginState extends State<Login> {
           builder: (BuildContext context) {
             return CupertinoAlertDialog(
               title: Text("Attenzione"),
-              content: Text("Non esiste un account con questa mail"),
+              content: Text("Non esiste un account con questa email"),
               actions: <Widget>[
                 CupertinoButton(
                   child: Text("Ok"),
@@ -79,7 +80,7 @@ class _LoginState extends State<Login> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Attenzione"),
-              content: Text("Username o password errati"),
+              content: Text("Email o password errati"),
               actions: <Widget>[
                 FlatButton(
                   child: Text("Ok"),
@@ -98,7 +99,7 @@ class _LoginState extends State<Login> {
           builder: (BuildContext context) {
             return CupertinoAlertDialog(
               title: Text("Attenzione"),
-              content: Text("Username o password errati"),
+              content: Text("Email o password errati"),
               actions: <Widget>[
                 CupertinoButton(
                   child: Text("Ok"),
@@ -112,22 +113,95 @@ class _LoginState extends State<Login> {
     }
   }
 
+  Future<void> showDialogEmailSent() async {
+    if (Platform.isAndroid) {
+      return showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Email inviata correttamente"),
+              content: Text(
+                  "Abbiamo inviato una mail di recupero password alla tua mail, controlla la tua casella di posta"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
+    if (Platform.isIOS) {
+      return showCupertinoDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text("Email inviata correttamente"),
+              content: Text(
+                  "Abbiamo inviato una mail di recupero password alla tua mail, controlla la tua casella di posta"),
+              actions: <Widget>[
+                CupertinoButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
+  }
+
+  Future<void> showDialogInsertEmailReset() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Inserisci la tua email"),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: emailRecuperoController,
+                ),
+              ),
+              RaisedButton(
+                child: Text("Fatto"),
+                onPressed: () async {
+                  try {
+                    await FirebaseAuth.instance.sendPasswordResetEmail(
+                        email: emailRecuperoController.text);
+                  } catch (e) {
+                    showDialogNotExist();
+                  }
+                  showDialogEmailSent();
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   void _inputChanged(String value) {
     setState(() {
-      isLoginDisabled =
-          (emailController.text.length == 0 || pwdController.text.length == 0);
+      isLoginDisabled = (emailController.text.length == 0 ||
+          passwordController.text.length == 0);
     });
   }
 
   void _loginPressed() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: pwdController.text);
-      snapshot = await _database
-          .collection('utenti')
-          .where('email', isEqualTo: emailController.text)
-          .get();
-      documentSnapshot = snapshot.docs.first;
+          email: emailController.text, password: passwordController.text);
+      User currentUser = FirebaseAuth.instance.currentUser;
+      documentSnapshot =
+          await _database.collection('utenti').doc(currentUser.uid).get();
       Navigator.pushNamed(context, HomePage.routeName,
           arguments: documentSnapshot);
     } on FirebaseAuthException catch (e) {
@@ -139,7 +213,7 @@ class _LoginState extends State<Login> {
     }
   }
 
-  List<Widget> buildListView() {
+  List<Widget> buildListView(BuildContext context) {
     if (Platform.isAndroid) {
       return <Widget>[
         Text(
@@ -154,7 +228,7 @@ class _LoginState extends State<Login> {
         ),
         TextField(
           decoration: InputDecoration(labelText: "Password"),
-          controller: pwdController,
+          controller: passwordController,
           onChanged: _inputChanged,
           obscureText: true,
         ),
@@ -162,6 +236,11 @@ class _LoginState extends State<Login> {
           child: Text("Accedi"),
           onPressed: isLoginDisabled ? null : _loginPressed,
         ),
+        RaisedButton(
+            child: Text("Password dimenticata?"),
+            onPressed: () async {
+              await showDialogInsertEmailReset();
+            }),
         Divider(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -202,7 +281,7 @@ class _LoginState extends State<Login> {
           child: CupertinoTextField(
             padding: EdgeInsets.all(8),
             placeholder: "Password",
-            controller: pwdController,
+            controller: passwordController,
             onChanged: _inputChanged,
             obscureText: true,
           ),
@@ -210,6 +289,39 @@ class _LoginState extends State<Login> {
         CupertinoButton(
           child: Text("Accedi"),
           onPressed: isLoginDisabled ? null : _loginPressed,
+        ),
+        CupertinoButton(
+          child: Text("Password dimenticata?"),
+          onPressed: () async {
+            showCupertinoModalPopup(
+                context: context,
+                builder: (context) {
+                  return CupertinoActionSheet(
+                    title: Text("Inserisci la tua email"),
+                    actions: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CupertinoTextField(
+                          controller: emailRecuperoController,
+                        ),
+                      ),
+                      CupertinoButton(
+                        child: Text("Fatto"),
+                        onPressed: () async {
+                          try {
+                            await FirebaseAuth.instance.sendPasswordResetEmail(
+                                email: emailRecuperoController.text);
+                          } catch (e) {
+                            showDialogNotExist();
+                          }
+                          await showDialogEmailSent();
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  );
+                });
+          },
         ),
         Divider(),
         Row(
@@ -240,7 +352,7 @@ class _LoginState extends State<Login> {
           child: Padding(
             padding: EdgeInsets.all(16),
             child: ListView(
-              children: buildListView(),
+              children: buildListView(context),
             ),
           ),
         ),
@@ -255,7 +367,7 @@ class _LoginState extends State<Login> {
           child: Padding(
             padding: EdgeInsets.all(16),
             child: ListView(
-              children: buildListView(),
+              children: buildListView(context),
             ),
           ),
         ),

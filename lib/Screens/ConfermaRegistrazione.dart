@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
@@ -19,10 +20,10 @@ class ConfermaRegistrazione extends StatelessWidget {
               Text("Registrazione avvenuta con successo! I tuoi dati sono:"),
               Text(utente.nome),
               Text(utente.cognome),
-              Text(utente.email),
+              Text(FirebaseAuth.instance.currentUser.email),
               Text(_df.format(utente.data_nascita)),
               Text(utente.username),
-              Text(utente.password),
+              Text(FirebaseAuth.instance.currentUser.email),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[

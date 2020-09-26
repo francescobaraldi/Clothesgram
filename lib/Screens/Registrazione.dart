@@ -93,7 +93,7 @@ class _RegistrazioneState extends State<Registrazione> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Attenzione"),
-              content: Text("Esiste già un account con questa mail"),
+              content: Text("Esiste già un account con questa email"),
               actions: <Widget>[
                 FlatButton(
                   child: Text("Ok"),
@@ -112,7 +112,7 @@ class _RegistrazioneState extends State<Registrazione> {
           builder: (BuildContext context) {
             return CupertinoAlertDialog(
               title: Text("Attenzione"),
-              content: Text("Esiste già un account con questa mail"),
+              content: Text("Esiste già un account con questa email"),
               actions: <Widget>[
                 CupertinoButton(
                   child: Text("Ok"),
@@ -234,39 +234,28 @@ class _RegistrazioneState extends State<Registrazione> {
   }
 
   void _register() async {
-    snapshot = await _database
-        .collection('utenti')
-        .where('email', isEqualTo: utente.email)
-        .get();
-    documentSnapshotList = snapshot.docs;
-    if (documentSnapshotList.isNotEmpty) {
-      showDialogAlreadyExist();
-    } else {
-      try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: utente.email, password: utente.password);
-        user = userCredential.user;
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak-password') {
-          print('The password provided is too weak.');
-        } else if (e.code == 'email-already-in-use') {
-          showDialogAlreadyExist();
-        }
-      } catch (e) {
-        print(e.toString());
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text);
+      user = userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        showDialogAlreadyExist();
       }
-      await _database.collection('utenti').doc(user.uid).set({
-        'nome': utente.nome,
-        'cognome': utente.cognome,
-        'email': utente.email,
-        'data_nascita': Timestamp.fromDate(utente.data_nascita),
-        'username': utente.username,
-        'password': utente.password,
-      });
-      Navigator.pushNamed(context, ConfermaRegistrazione.routeName,
-          arguments: utente);
+    } catch (e) {
+      print(e.toString());
     }
+    await _database.collection('utenti').doc(user.uid).set({
+      'nome': utente.nome,
+      'cognome': utente.cognome,
+      'data_nascita': Timestamp.fromDate(utente.data_nascita),
+      'username': utente.username,
+    });
+    Navigator.pushNamed(context, ConfermaRegistrazione.routeName,
+        arguments: utente);
   }
 
   Widget build(BuildContext context) {
@@ -315,7 +304,7 @@ class _RegistrazioneState extends State<Registrazione> {
                       labelText: "Email",
                     ),
                     onSaved: (value) {
-                      utente.email = value;
+                      emailController.text = value;
                     },
                     validator: (value) {
                       if (value.length == 0)
@@ -344,7 +333,7 @@ class _RegistrazioneState extends State<Registrazione> {
                       labelText: "Password",
                     ),
                     onSaved: (value) {
-                      utente.password = value;
+                      passwordController.text = value;
                     },
                     validator: (value) {
                       if (value.length == 0)
@@ -358,7 +347,7 @@ class _RegistrazioneState extends State<Registrazione> {
                     decoration: InputDecoration(
                       labelText: "Conferma Passorwd",
                     ),
-                    onSaved: (value) => utente.password = value,
+                    onSaved: (value) => confermaPasswordController.text = value,
                     validator: (value) {
                       if (value != _pwdKey.currentState.value)
                         return "Password non identiche";
@@ -482,9 +471,7 @@ class _RegistrazioneState extends State<Registrazione> {
                     controllaDati();
                     utente.nome = nomeController.text;
                     utente.cognome = cognomeController.text;
-                    utente.email = emailController.text;
                     utente.username = usernameController.text;
-                    utente.password = passwordController.text;
                     _register();
                   },
                 ),

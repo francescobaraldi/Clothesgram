@@ -25,7 +25,6 @@ class _ProfiloState extends State<Profilo> {
   DateTime _selectedDate = DateTime.now();
   Utente utenteAppoggio = Utente();
   Utente utente;
-  bool visibility_off = true;
   String documentId;
 
   FirebaseFirestore _database;
@@ -36,56 +35,13 @@ class _ProfiloState extends State<Profilo> {
 
   TextEditingController nomeController = TextEditingController();
   TextEditingController cognomeController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _database = FirebaseFirestore.instance;
     auth = FirebaseAuth.instance;
-  }
-
-  Future<void> showDialogAlreadyExist() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Esiste già un account con questa mail"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Esiste già un account con questa mail"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
   }
 
   Future<void> showDialogRequiredField(String value) {
@@ -145,28 +101,12 @@ class _ProfiloState extends State<Profilo> {
       showDialogShortField("Cognome");
       return;
     }
-    if (emailController.text.isEmpty) {
-      showDialogRequiredField("Email");
-      return;
-    }
-    if (emailController.text.length < 5) {
-      showDialogShortField("Email");
-      return;
-    }
     if (usernameController.text.isEmpty) {
       showDialogRequiredField("Username");
       return;
     }
     if (usernameController.text.length < 3) {
       showDialogShortField("Username");
-      return;
-    }
-    if (passwordController.text.isEmpty) {
-      showDialogRequiredField("Password");
-      return;
-    }
-    if (passwordController.text.length < 8) {
-      showDialogShortField("Password");
       return;
     }
   }
@@ -211,17 +151,14 @@ class _ProfiloState extends State<Profilo> {
   Widget build(BuildContext context) {
     documentSnapshot = ModalRoute.of(context).settings.arguments;
     utente = Utente.fromDocument(documentSnapshot);
-    utente.documentId = auth.currentUser.uid;
 
-    TextEditingController dataController = TextEditingController();
-    dataController.text = utenteAppoggio.data_nascita == null
+    TextEditingController dateController = TextEditingController();
+    dateController.text = utenteAppoggio.data_nascita == null
         ? widget._df.format(utente.data_nascita)
         : widget._df.format(utenteAppoggio.data_nascita);
     nomeController.text = utente.nome;
     cognomeController.text = utente.cognome;
-    emailController.text = utente.email;
     usernameController.text = utente.username;
-    passwordController.text = utente.password;
 
     if (Platform.isAndroid) {
       return Scaffold(
@@ -232,11 +169,10 @@ class _ProfiloState extends State<Profilo> {
               return IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () async {
-                  snapshot = await _database
+                  documentSnapshot = await _database
                       .collection('utenti')
-                      .where('email', isEqualTo: utente.email)
+                      .doc(utente.documentId)
                       .get();
-                  documentSnapshot = snapshot.docs.first;
                   Navigator.pushNamed(context, HomePage.routeName,
                       arguments: documentSnapshot);
                 },
@@ -295,39 +231,6 @@ class _ProfiloState extends State<Profilo> {
                   ),
                   ListTile(
                     leading: Text(
-                      "Email",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    title: TextFormField(
-                      controller: emailController,
-                      validator: (value) {
-                        if (value.length == 0)
-                          return "Campo obbligatorio";
-                        else if (value.length < 5) return "Email non valida";
-                        return null;
-                      },
-                      enabled: false,
-                    ),
-                  ),
-                  ListTile(
-                    leading: Text(
-                      "Data di nascita",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    title: TextFormField(
-                      controller: dataController,
-                      enabled: false,
-                    ),
-                    trailing: IconButton(
-                        icon: Icon(Icons.date_range),
-                        onPressed: modificheOn == false
-                            ? null
-                            : () {
-                                getDate(context);
-                              }),
-                  ),
-                  ListTile(
-                    leading: Text(
                       "Username",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -345,31 +248,20 @@ class _ProfiloState extends State<Profilo> {
                   ),
                   ListTile(
                     leading: Text(
-                      "Password",
+                      "Data di nascita",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     title: TextFormField(
-                      enabled: modificheOn,
-                      controller: passwordController,
-                      validator: (value) {
-                        if (value.length == 0)
-                          return "Campo obbligatorio";
-                        else if (value.length < 3)
-                          return "Password troppo corta";
-                        return null;
-                      },
-                      obscureText: visibility_off,
+                      controller: dateController,
+                      enabled: false,
                     ),
                     trailing: IconButton(
-                      icon: visibility_off
-                          ? Icon(Icons.visibility_off)
-                          : Icon(Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          visibility_off = !visibility_off;
-                        });
-                      },
-                    ),
+                        icon: Icon(Icons.date_range),
+                        onPressed: modificheOn == false
+                            ? null
+                            : () {
+                                getDate(context);
+                              }),
                   ),
                   RaisedButton(
                     child: Text(button),
@@ -389,71 +281,30 @@ class _ProfiloState extends State<Profilo> {
                               utenteAppoggio.data_nascita == null
                                   ? utente.data_nascita
                                   : utenteAppoggio.data_nascita;
-                          if (utente.email != emailController.text) {
-                            snapshot = await _database
+                          utente.nome = nomeController.text;
+                          utente.cognome = cognomeController.text;
+                          utente.username = usernameController.text;
+                          try {
+                            _database
                                 .collection('utenti')
-                                .where('email', isEqualTo: emailController.text)
-                                .get();
-                            documentSnapshotList = snapshot.docs;
-                            if (documentSnapshotList.isNotEmpty) {
-                              showDialogAlreadyExist();
-                            } else {
-                              utente.nome = nomeController.text;
-                              utente.cognome = cognomeController.text;
-                              utente.email = emailController.text;
-                              utente.username = usernameController.text;
-                              utente.password = passwordController.text;
-                              try {
-                                _database
-                                    .collection('utenti')
-                                    .doc(utente.documentId)
-                                    .update({
-                                  'nome': utente.nome,
-                                  'cognome': utente.cognome,
-                                  'email': utente.email,
-                                  'data_nascita':
-                                      Timestamp.fromDate(utente.data_nascita),
-                                  'username': utente.username,
-                                  'password': utente.password
-                                });
-                              } catch (e) {
-                                print(e.toString());
-                              }
-                              User user = auth.currentUser;
-                              await user.updateEmail(utente.email);
-                              await user.updatePassword(utente.password);
-                            }
-                          } else {
-                            utente.nome = nomeController.text;
-                            utente.cognome = cognomeController.text;
-                            utente.email = emailController.text;
-                            utente.username = usernameController.text;
-                            utente.password = passwordController.text;
-                            try {
-                              _database
-                                  .collection('utenti')
-                                  .doc(utente.documentId)
-                                  .update({
-                                'nome': utente.nome,
-                                'cognome': utente.cognome,
-                                'email': utente.email,
-                                'data_nascita': utente.data_nascita,
-                                'username': utente.username,
-                                'password': utente.password
-                              });
-                            } catch (e) {
-                              print(e.toString());
-                            }
-                            User user = auth.currentUser;
-                            await user.updatePassword(utente.password);
+                                .doc(utente.documentId)
+                                .update({
+                              'nome': utente.nome,
+                              'cognome': utente.cognome,
+                              'data_nascita':
+                                  Timestamp.fromDate(utente.data_nascita),
+                              'username': utente.username,
+                            });
+                          } catch (e) {
+                            print(e.toString());
                           }
+                          documentSnapshot = await _database
+                              .collection('utenti')
+                              .doc(utente.documentId)
+                              .get();
+                          Navigator.pushNamed(context, HomePage.routeName,
+                              arguments: documentSnapshot);
                         }
-                        documentSnapshot = await _database
-                            .collection('utenti')
-                            .doc(utente.documentId)
-                            .get();
-                        Navigator.pushNamed(context, HomePage.routeName,
-                            arguments: documentSnapshot);
                       }
                     },
                   ),
@@ -471,11 +322,10 @@ class _ProfiloState extends State<Profilo> {
           leading: CupertinoButton(
             child: Icon(CupertinoIcons.back),
             onPressed: () async {
-              snapshot = await _database
+              documentSnapshot = await _database
                   .collection('utenti')
-                  .where('email', isEqualTo: utente.email)
+                  .doc(utente.documentId)
                   .get();
-              documentSnapshot = snapshot.docs.first;
               Navigator.pushNamed(context, HomePage.routeName,
                   arguments: documentSnapshot);
             },
@@ -505,9 +355,9 @@ class _ProfiloState extends State<Profilo> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    enabled: false,
-                    prefix: Text("Email"),
-                    controller: emailController,
+                    enabled: modificheOn,
+                    prefix: Text("Username"),
+                    controller: usernameController,
                   ),
                 ),
                 Row(
@@ -530,23 +380,6 @@ class _ProfiloState extends State<Profilo> {
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: CupertinoTextField(
-                    enabled: modificheOn,
-                    prefix: Text("Username"),
-                    controller: usernameController,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CupertinoTextField(
-                    enabled: modificheOn,
-                    prefix: Text("Password"),
-                    controller: passwordController,
-                    obscureText: true,
-                  ),
-                ),
                 CupertinoButton(
                   child: Text(button),
                   onPressed: () async {
@@ -564,63 +397,22 @@ class _ProfiloState extends State<Profilo> {
                       utente.data_nascita = utenteAppoggio.data_nascita == null
                           ? utente.data_nascita
                           : utenteAppoggio.data_nascita;
-                      if (utente.email != emailController.text) {
-                        snapshot = await _database
+                      utente.nome = nomeController.text;
+                      utente.cognome = cognomeController.text;
+                      utente.username = usernameController.text;
+                      try {
+                        _database
                             .collection('utenti')
-                            .where('email', isEqualTo: emailController.text)
-                            .get();
-                        documentSnapshotList = snapshot.docs;
-                        if (documentSnapshotList.isNotEmpty) {
-                          showDialogAlreadyExist();
-                        } else {
-                          utente.nome = nomeController.text;
-                          utente.cognome = cognomeController.text;
-                          utente.email = emailController.text;
-                          utente.username = usernameController.text;
-                          utente.password = passwordController.text;
-                          try {
-                            _database
-                                .collection('utenti')
-                                .doc(utente.documentId)
-                                .update({
-                              'nome': utente.nome,
-                              'cognome': utente.cognome,
-                              'email': utente.email,
-                              'data_nascita':
-                                  Timestamp.fromDate(utente.data_nascita),
-                              'username': utente.username,
-                              'password': utente.password
-                            });
-                          } catch (e) {
-                            print(e.toString());
-                          }
-                          User user = auth.currentUser;
-                          await user.updateEmail(utente.email);
-                          await user.updatePassword(utente.password);
-                        }
-                      } else {
-                        utente.nome = nomeController.text;
-                        utente.cognome = cognomeController.text;
-                        utente.email = emailController.text;
-                        utente.username = usernameController.text;
-                        utente.password = passwordController.text;
-                        try {
-                          _database
-                              .collection('utenti')
-                              .doc(utente.documentId)
-                              .update({
-                            'nome': utente.nome,
-                            'cognome': utente.cognome,
-                            'email': utente.email,
-                            'data_nascita': utente.data_nascita,
-                            'username': utente.username,
-                            'password': utente.password
-                          });
-                        } catch (e) {
-                          print(e.toString());
-                        }
-                        User user = auth.currentUser;
-                        await user.updatePassword(utente.password);
+                            .doc(utente.documentId)
+                            .update({
+                          'nome': utente.nome,
+                          'cognome': utente.cognome,
+                          'data_nascita':
+                              Timestamp.fromDate(utente.data_nascita),
+                          'username': utente.username,
+                        });
+                      } catch (e) {
+                        print(e.toString());
                       }
                       documentSnapshot = await _database
                           .collection('utenti')
