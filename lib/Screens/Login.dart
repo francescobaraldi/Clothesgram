@@ -159,15 +159,18 @@ class _LoginState extends State<Login> {
   Future<void> showDialogInsertEmailReset() async {
     return showDialog(
         context: context,
-        barrierDismissible: false,
+        // barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text("Inserisci la tua email"),
             actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: emailRecuperoController,
+              SizedBox(
+                width: 200,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: TextField(
+                    controller: emailRecuperoController,
+                  ),
                 ),
               ),
               RaisedButton(
@@ -179,7 +182,7 @@ class _LoginState extends State<Login> {
                   } catch (e) {
                     showDialogNotExist();
                   }
-                  showDialogEmailSent();
+                  await showDialogEmailSent();
                   Navigator.pop(context);
                 },
               ),
