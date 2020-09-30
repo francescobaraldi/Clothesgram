@@ -5,6 +5,7 @@ import 'package:Applicazione/Screens/HomePage.dart';
 import 'package:Applicazione/Screens/Registrazione.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Login extends StatefulWidget {
   static const routeName = "/";
@@ -23,6 +24,7 @@ class _LoginState extends State<Login> {
 
   FirebaseFirestore _database;
   QuerySnapshot snapshot;
+  DocumentReference documentReference;
   DocumentSnapshot documentSnapshot;
 
   @override
@@ -216,6 +218,28 @@ class _LoginState extends State<Login> {
     }
   }
 
+  Future<User> signInWithGoogle() async {
+    await GoogleSignIn().signOut();
+    final GoogleSignInAccount googleSignInAccount =
+        await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    final UserCredential authResult =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    final User user = authResult.user;
+
+    final User currentUser = FirebaseAuth.instance.currentUser;
+    assert(user.uid == currentUser.uid);
+
+    return currentUser;
+  }
+
   List<Widget> buildListView(BuildContext context) {
     if (Platform.isAndroid) {
       return <Widget>[
@@ -244,6 +268,26 @@ class _LoginState extends State<Login> {
             onPressed: () async {
               await showDialogInsertEmailReset();
             }),
+        Divider(),
+        RaisedButton(
+          child: Text("Accedi con Google"),
+          onPressed: () async {
+            User currentUser = await signInWithGoogle();
+            List<String> nomi = currentUser.displayName.split(" ");
+            String username =
+                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+            await _database.collection('utenti').doc(currentUser.uid).set({
+              'nome': nomi[0],
+              'cognome': nomi[1],
+              'data_nascita': Timestamp.fromDate(DateTime.now()),
+              'username': username,
+            });
+            documentSnapshot =
+                await _database.collection('utenti').doc(currentUser.uid).get();
+            Navigator.pushNamed(context, HomePage.routeName,
+                arguments: documentSnapshot);
+          },
+        ),
         Divider(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -324,6 +368,26 @@ class _LoginState extends State<Login> {
                     ],
                   );
                 });
+          },
+        ),
+        Divider(),
+        CupertinoButton(
+          child: Text("Accedi con Google"),
+          onPressed: () async {
+            User currentUser = await signInWithGoogle();
+            List<String> nomi = currentUser.displayName.split(" ");
+            String username =
+                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+            await _database.collection('utenti').doc(currentUser.uid).set({
+              'nome': nomi[0],
+              'cognome': nomi[1],
+              'data_nascita': Timestamp.fromDate(DateTime.now()),
+              'username': username,
+            });
+            documentSnapshot =
+                await _database.collection('utenti').doc(currentUser.uid).get();
+            Navigator.pushNamed(context, HomePage.routeName,
+                arguments: documentSnapshot);
           },
         ),
         Divider(),

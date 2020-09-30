@@ -6,6 +6,7 @@ import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = "/HomePage";
@@ -85,6 +86,7 @@ class _HomePageState extends State<HomePage> {
             leading: Icon(Icons.exit_to_app),
             title: Text("Esci dall'account"),
             onTap: () async {
+              await GoogleSignIn().signOut;
               await FirebaseAuth.instance.signOut();
               Navigator.popUntil(context, ModalRoute.withName("/"));
             },
@@ -117,6 +119,7 @@ class _HomePageState extends State<HomePage> {
               child: Text("Esci dall'account",
                   style: TextStyle(color: CupertinoColors.destructiveRed)),
               onPressed: () async {
+                await GoogleSignIn().signOut;
                 await FirebaseAuth.instance.signOut();
                 Navigator.popUntil(context, ModalRoute.withName("/"));
               },

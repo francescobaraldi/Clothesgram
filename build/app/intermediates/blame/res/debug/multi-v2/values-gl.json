@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/francescobaraldi/Desktop/Dart/Applicazione/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-gl/values-gl.xml",
+            "outputFile": "/Users/francescobaraldi/Desktop/Dart/Applicazione-Firebase/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-gl/values-gl.xml",
             "map": [
                 {
                     "source": "/Users/francescobaraldi/.gradle/caches/transforms-2/files-2.1/6eb14f512292913515d869914807ad40/play-services-base-17.1.0/res/values-gl/values.xml",
