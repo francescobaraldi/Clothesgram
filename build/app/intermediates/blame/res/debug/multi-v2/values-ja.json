@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/francescobaraldi/Desktop/Dart/Applicazione/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-ja/values-ja.xml",
+            "outputFile": "/Users/francescobaraldi/Desktop/Dart/Applicazione-Firebase/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-ja/values-ja.xml",
             "map": [
                 {
                     "source": "/Users/francescobaraldi/.gradle/caches/transforms-2/files-2.1/8ca595d5fc3bcff5350c0574272cc0eb/jetified-play-services-basement-17.0.0/res/values-ja/values.xml",
