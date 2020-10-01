@@ -1,6 +1,7 @@
-#Wed Sep 30 10:05:54 CEST 2020
+#Wed Sep 30 16:59:14 CEST 2020
 path.1=classes.dex
 path.0=classes.dex
+renamed.9=classes10.dex
 renamed.8=classes9.dex
 renamed.7=classes8.dex
 renamed.6=classes7.dex
@@ -8,6 +9,7 @@ renamed.5=classes6.dex
 renamed.4=classes5.dex
 renamed.3=classes4.dex
 renamed.2=classes3.dex
+base.9=/Users/francescobaraldi/Desktop/Dart/Applicazione-Firebase/build/app/intermediates/dex/debug/mergeLibDexDebug/out/classes_6.dex
 renamed.1=classes2.dex
 base.8=/Users/francescobaraldi/Desktop/Dart/Applicazione-Firebase/build/app/intermediates/dex/debug/mergeLibDexDebug/out/classes_5.dex
 renamed.0=classes.dex
@@ -19,6 +21,7 @@ base.3=/Users/francescobaraldi/Desktop/Dart/Applicazione-Firebase/build/app/inte
 base.2=/Users/francescobaraldi/Desktop/Dart/Applicazione-Firebase/build/app/intermediates/dex/debug/mergeExtDexDebug/out/classes2.dex
 base.1=/Users/francescobaraldi/Desktop/Dart/Applicazione-Firebase/build/app/intermediates/dex/debug/mergeProjectDexDebug/out/classes.dex
 base.0=/Users/francescobaraldi/Desktop/Dart/Applicazione-Firebase/build/app/intermediates/dex/debug/mergeExtDexDebug/out/classes.dex
+path.9=classes_6.dex
 path.8=classes_5.dex
 path.7=classes_4.dex
 path.6=classes_3.dex
