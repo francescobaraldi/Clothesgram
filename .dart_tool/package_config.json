@@ -122,6 +122,12 @@
       "languageVersion": "2.9"
     },
     {
+      "name": "flutter_facebook_auth",
+      "rootUri": "file:///Users/francescobaraldi/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_facebook_auth-0.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///Users/francescobaraldi/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -332,7 +338,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-09-29T13:57:26.786409Z",
+  "generated": "2020-09-30T14:21:10.672523Z",
   "generator": "pub",
   "generatorVersion": "2.9.2"
 }

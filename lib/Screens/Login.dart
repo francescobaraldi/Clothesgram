@@ -6,6 +6,7 @@ import 'package:Applicazione/Screens/Registrazione.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class Login extends StatefulWidget {
   static const routeName = "/";
@@ -240,6 +241,22 @@ class _LoginState extends State<Login> {
     return currentUser;
   }
 
+  Future<User> signInWithFacebook() async {
+    await FacebookAuth.instance.logOut();
+    final LoginResult result = await FacebookAuth.instance.login();
+
+    final FacebookAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(result.accessToken.token);
+    print("DEBUG: " + facebookAuthCredential.toString());
+
+    UserCredential credential = await FirebaseAuth.instance
+        .signInWithCredential(facebookAuthCredential); //L'errore è qui
+    User user = credential.user;
+    User currentUser = FirebaseAuth.instance.currentUser;
+    assert(user.uid == currentUser.uid);
+    return currentUser;
+  }
+
   List<Widget> buildListView(BuildContext context) {
     if (Platform.isAndroid) {
       return <Widget>[
@@ -273,6 +290,25 @@ class _LoginState extends State<Login> {
           child: Text("Accedi con Google"),
           onPressed: () async {
             User currentUser = await signInWithGoogle();
+            List<String> nomi = currentUser.displayName.split(" ");
+            String username =
+                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+            await _database.collection('utenti').doc(currentUser.uid).set({
+              'nome': nomi[0],
+              'cognome': nomi[1],
+              'data_nascita': Timestamp.fromDate(DateTime.now()),
+              'username': username,
+            });
+            documentSnapshot =
+                await _database.collection('utenti').doc(currentUser.uid).get();
+            Navigator.pushNamed(context, HomePage.routeName,
+                arguments: documentSnapshot);
+          },
+        ),
+        RaisedButton(
+          child: Text("Accedi con Facebook"),
+          onPressed: () async {
+            User currentUser = await signInWithFacebook();
             List<String> nomi = currentUser.displayName.split(" ");
             String username =
                 currentUser.displayName.toLowerCase().replaceAll(r" ", "");
@@ -371,10 +407,30 @@ class _LoginState extends State<Login> {
           },
         ),
         Divider(),
-        CupertinoButton(
+        CupertinoButton.filled(
           child: Text("Accedi con Google"),
           onPressed: () async {
             User currentUser = await signInWithGoogle();
+            List<String> nomi = currentUser.displayName.split(" ");
+            String username =
+                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+            await _database.collection('utenti').doc(currentUser.uid).set({
+              'nome': nomi[0],
+              'cognome': nomi[1],
+              'data_nascita': Timestamp.fromDate(DateTime.now()),
+              'username': username,
+            });
+            documentSnapshot =
+                await _database.collection('utenti').doc(currentUser.uid).get();
+            Navigator.pushNamed(context, HomePage.routeName,
+                arguments: documentSnapshot);
+          },
+        ),
+        Padding(padding: EdgeInsets.all(8)),
+        CupertinoButton.filled(
+          child: Text("Accedi con Facebook"),
+          onPressed: () async {
+            User currentUser = await signInWithFacebook();
             List<String> nomi = currentUser.displayName.split(" ");
             String username =
                 currentUser.displayName.toLowerCase().replaceAll(r" ", "");
