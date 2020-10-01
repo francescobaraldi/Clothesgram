@@ -9,7 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class Login extends StatefulWidget {
-  static const routeName = "/";
+  static const routeName = "/Login";
   final String title;
 
   Login({Key key, this.title}) : super(key: key);
