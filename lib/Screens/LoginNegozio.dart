@@ -1,13 +1,10 @@
-import 'package:Applicazione/Screens/RegistrazioneNegozio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
+import 'package:Applicazione/Screens/RegistrazioneNegozio.dart';
 import 'package:Applicazione/Screens/HomePage.dart';
-import 'package:Applicazione/Screens/Registrazione.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class LoginNegozio extends StatefulWidget {
   static const routeName = "/LoginNegozio";
@@ -126,7 +123,7 @@ class _LoginNegozioState extends State<LoginNegozio> {
             return AlertDialog(
               title: Text("Email inviata correttamente"),
               content: Text(
-                  "Abbiamo inviato una mail di recupero password alla tua mail, controlla la tua casella di posta"),
+                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
               actions: <Widget>[
                 FlatButton(
                   child: Text("Ok"),
@@ -146,7 +143,7 @@ class _LoginNegozioState extends State<LoginNegozio> {
             return CupertinoAlertDialog(
               title: Text("Email inviata correttamente"),
               content: Text(
-                  "Abbiamo inviato una mail di recupero password alla tua mail, controlla la tua casella di posta"),
+                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
               actions: <Widget>[
                 CupertinoButton(
                   child: Text("Ok"),

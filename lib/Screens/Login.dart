@@ -125,7 +125,7 @@ class _LoginState extends State<Login> {
             return AlertDialog(
               title: Text("Email inviata correttamente"),
               content: Text(
-                  "Abbiamo inviato una mail di recupero password alla tua mail, controlla la tua casella di posta"),
+                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
               actions: <Widget>[
                 FlatButton(
                   child: Text("Ok"),
@@ -145,7 +145,7 @@ class _LoginState extends State<Login> {
             return CupertinoAlertDialog(
               title: Text("Email inviata correttamente"),
               content: Text(
-                  "Abbiamo inviato una mail di recupero password alla tua mail, controlla la tua casella di posta"),
+                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
               actions: <Widget>[
                 CupertinoButton(
                   child: Text("Ok"),
@@ -162,7 +162,6 @@ class _LoginState extends State<Login> {
   Future<void> showDialogInsertEmailReset() async {
     return showDialog(
         context: context,
-        // barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text("Inserisci la tua email"),

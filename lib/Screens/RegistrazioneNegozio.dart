@@ -30,10 +30,10 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
   DocumentReference documentReference;
 
   TextEditingController nomeNegozioController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController cittaController = TextEditingController();
   TextEditingController viaController = TextEditingController();
   TextEditingController numeroCivicoController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confermaPasswordController = TextEditingController();
 
@@ -124,6 +124,26 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
         });
   }
 
+  Future<void> showDialogNotNumeric(String value) {
+    return showCupertinoDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text("Attenzione"),
+            content: Text("Il campo \"" + value + "\" deve essere numerico"),
+            actions: <Widget>[
+              CupertinoButton(
+                child: Text("Ok"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   Future<void> showDialogNotEgualPassword() {
     return showCupertinoDialog(
         context: context,
@@ -181,8 +201,8 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
       showDialogRequiredField("Numero civico");
       return;
     }
-    if (numeroCivicoController.text.length < 3) {
-      showDialogShortField("Numero civico");
+    if (int.tryParse(numeroCivicoController.text) == null) {
+      showDialogNotNumeric("Numero civico");
       return;
     }
     if (passwordController.text.isEmpty) {
@@ -247,8 +267,7 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                     validator: (value) {
                       if (value.length == 0)
                         return "Campo obbligatorio";
-                      else if (value.length < 2)
-                        return "Nome negozio troppo corto";
+                      else if (value.length < 2) return "Campo troppo corto";
                       return null;
                     },
                   ),
@@ -262,7 +281,7 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                     validator: (value) {
                       if (value.length == 0)
                         return "Campo obbligatorio";
-                      else if (value.length < 3) return "Città troppo corta";
+                      else if (value.length < 3) return "Campo troppo corto";
                       return null;
                     },
                   ),
@@ -276,7 +295,7 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                     validator: (value) {
                       if (value.length == 0)
                         return "Campo obbligatorio";
-                      else if (value.length < 2) return "Via troppo corta";
+                      else if (value.length < 2) return "Campo troppo corto";
                       return null;
                     },
                   ),
@@ -325,7 +344,7 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                   ),
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: "Conferma Passorwd",
+                      labelText: "Conferma Password",
                     ),
                     onSaved: (value) => confermaPasswordController.text = value,
                     validator: (value) {
