@@ -1,4 +1,3 @@
-import 'package:Applicazione/Screens/LoginNegozio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
