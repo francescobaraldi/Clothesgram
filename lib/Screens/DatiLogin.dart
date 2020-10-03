@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
+import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Screens/HomePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,6 +24,7 @@ class _DatiLoginState extends State<DatiLogin> {
   TextEditingController passwordController = TextEditingController();
 
   Utente utente;
+  Negozio negozio;
 
   bool modificheOn = false;
   String button = "Modifica";
@@ -83,7 +85,7 @@ class _DatiLoginState extends State<DatiLogin> {
             return AlertDialog(
               title: Text("Email inviata correttamente"),
               content: Text(
-                  "Abbiamo inviato una mail di recupero password alla tua mail, controlla la tua casella di posta"),
+                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
               actions: <Widget>[
                 FlatButton(
                   child: Text("Ok"),
@@ -103,7 +105,7 @@ class _DatiLoginState extends State<DatiLogin> {
             return CupertinoAlertDialog(
               title: Text("Email inviata correttamente"),
               content: Text(
-                  "Abbiamo inviato una mail di recupero password alla tua mail, controlla la tua casella di posta"),
+                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
               actions: <Widget>[
                 CupertinoButton(
                   child: Text("Ok"),
@@ -118,6 +120,7 @@ class _DatiLoginState extends State<DatiLogin> {
   }
 
   Widget build(BuildContext context) {
+    bool isUtente = ModalRoute.of(context).settings.arguments;
     emailController.text = auth.currentUser.email;
     passwordController.text;
 
@@ -130,10 +133,17 @@ class _DatiLoginState extends State<DatiLogin> {
               return IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () async {
-                  documentSnapshot = await _database
-                      .collection('utenti')
-                      .doc(FirebaseAuth.instance.currentUser.uid)
-                      .get();
+                  if (isUtente) {
+                    documentSnapshot = await _database
+                        .collection('utenti')
+                        .doc(FirebaseAuth.instance.currentUser.uid)
+                        .get();
+                  } else {
+                    documentSnapshot = await _database
+                        .collection('negozi')
+                        .doc(FirebaseAuth.instance.currentUser.uid)
+                        .get();
+                  }
                   Navigator.pushNamed(context, HomePage.routeName,
                       arguments: documentSnapshot);
                 },
@@ -175,10 +185,17 @@ class _DatiLoginState extends State<DatiLogin> {
                           print(e.toString());
                         }
                       }
-                      documentSnapshot = await _database
-                          .collection('utenti')
-                          .doc(FirebaseAuth.instance.currentUser.uid)
-                          .get();
+                      if (isUtente) {
+                        documentSnapshot = await _database
+                            .collection('utenti')
+                            .doc(FirebaseAuth.instance.currentUser.uid)
+                            .get();
+                      } else {
+                        documentSnapshot = await _database
+                            .collection('negozi')
+                            .doc(FirebaseAuth.instance.currentUser.uid)
+                            .get();
+                      }
                       Navigator.pushNamed(context, HomePage.routeName,
                           arguments: documentSnapshot);
                     }
@@ -192,10 +209,17 @@ class _DatiLoginState extends State<DatiLogin> {
                           await FirebaseAuth.instance.sendPasswordResetEmail(
                               email: auth.currentUser.email);
                           await showDialogEmailSent();
-                          documentSnapshot = await _database
-                              .collection('utenti')
-                              .doc(FirebaseAuth.instance.currentUser.uid)
-                              .get();
+                          if (isUtente) {
+                            documentSnapshot = await _database
+                                .collection('utenti')
+                                .doc(FirebaseAuth.instance.currentUser.uid)
+                                .get();
+                          } else {
+                            documentSnapshot = await _database
+                                .collection('negozi')
+                                .doc(FirebaseAuth.instance.currentUser.uid)
+                                .get();
+                          }
                           Navigator.pushNamed(context, HomePage.routeName,
                               arguments: documentSnapshot);
                         })),
@@ -212,10 +236,17 @@ class _DatiLoginState extends State<DatiLogin> {
           leading: CupertinoButton(
             child: Icon(CupertinoIcons.back),
             onPressed: () async {
-              documentSnapshot = await _database
-                  .collection('utenti')
-                  .doc(FirebaseAuth.instance.currentUser.uid)
-                  .get();
+              if (isUtente) {
+                documentSnapshot = await _database
+                    .collection('utenti')
+                    .doc(FirebaseAuth.instance.currentUser.uid)
+                    .get();
+              } else {
+                documentSnapshot = await _database
+                    .collection('negozi')
+                    .doc(FirebaseAuth.instance.currentUser.uid)
+                    .get();
+              }
               Navigator.pushNamed(context, HomePage.routeName,
                   arguments: documentSnapshot);
             },
@@ -260,10 +291,17 @@ class _DatiLoginState extends State<DatiLogin> {
                           print(e.toString());
                         }
                       }
-                      documentSnapshot = await _database
-                          .collection('utenti')
-                          .doc(FirebaseAuth.instance.currentUser.uid)
-                          .get();
+                      if (isUtente) {
+                        documentSnapshot = await _database
+                            .collection('utenti')
+                            .doc(FirebaseAuth.instance.currentUser.uid)
+                            .get();
+                      } else {
+                        documentSnapshot = await _database
+                            .collection('negozi')
+                            .doc(FirebaseAuth.instance.currentUser.uid)
+                            .get();
+                      }
                       Navigator.pushNamed(context, HomePage.routeName,
                           arguments: documentSnapshot);
                     }
@@ -277,10 +315,17 @@ class _DatiLoginState extends State<DatiLogin> {
                           await FirebaseAuth.instance.sendPasswordResetEmail(
                               email: auth.currentUser.email);
                           await showDialogEmailSent();
-                          documentSnapshot = await _database
-                              .collection('utenti')
-                              .doc(FirebaseAuth.instance.currentUser.uid)
-                              .get();
+                          if (isUtente) {
+                            documentSnapshot = await _database
+                                .collection('utenti')
+                                .doc(FirebaseAuth.instance.currentUser.uid)
+                                .get();
+                          } else {
+                            documentSnapshot = await _database
+                                .collection('negozi')
+                                .doc(FirebaseAuth.instance.currentUser.uid)
+                                .get();
+                          }
                           Navigator.pushNamed(context, HomePage.routeName,
                               arguments: documentSnapshot);
                         })),

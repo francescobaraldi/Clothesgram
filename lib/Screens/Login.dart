@@ -5,9 +5,11 @@ import 'package:Applicazione/Screens/HomePage.dart';
 import 'package:Applicazione/Screens/Registrazione.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class Login extends StatefulWidget {
-  static const routeName = "/";
+  static const routeName = "/Login";
   final String title;
 
   Login({Key key, this.title}) : super(key: key);
@@ -23,6 +25,7 @@ class _LoginState extends State<Login> {
 
   FirebaseFirestore _database;
   QuerySnapshot snapshot;
+  DocumentReference documentReference;
   DocumentSnapshot documentSnapshot;
 
   @override
@@ -122,7 +125,7 @@ class _LoginState extends State<Login> {
             return AlertDialog(
               title: Text("Email inviata correttamente"),
               content: Text(
-                  "Abbiamo inviato una mail di recupero password alla tua mail, controlla la tua casella di posta"),
+                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
               actions: <Widget>[
                 FlatButton(
                   child: Text("Ok"),
@@ -142,7 +145,7 @@ class _LoginState extends State<Login> {
             return CupertinoAlertDialog(
               title: Text("Email inviata correttamente"),
               content: Text(
-                  "Abbiamo inviato una mail di recupero password alla tua mail, controlla la tua casella di posta"),
+                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
               actions: <Widget>[
                 CupertinoButton(
                   child: Text("Ok"),
@@ -159,7 +162,6 @@ class _LoginState extends State<Login> {
   Future<void> showDialogInsertEmailReset() async {
     return showDialog(
         context: context,
-        // barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text("Inserisci la tua email"),
@@ -216,6 +218,44 @@ class _LoginState extends State<Login> {
     }
   }
 
+  Future<User> signInWithGoogle() async {
+    await GoogleSignIn().signOut();
+    final GoogleSignInAccount googleSignInAccount =
+        await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    final UserCredential authResult =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    final User user = authResult.user;
+
+    final User currentUser = FirebaseAuth.instance.currentUser;
+    assert(user.uid == currentUser.uid);
+
+    return currentUser;
+  }
+
+  Future<User> signInWithFacebook() async {
+    await FacebookAuth.instance.logOut();
+    final LoginResult result = await FacebookAuth.instance.login();
+
+    final FacebookAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(result.accessToken.token);
+    print("DEBUG: " + facebookAuthCredential.toString());
+
+    UserCredential credential = await FirebaseAuth.instance
+        .signInWithCredential(facebookAuthCredential); //L'errore è qui
+    User user = credential.user;
+    User currentUser = FirebaseAuth.instance.currentUser;
+    assert(user.uid == currentUser.uid);
+    return currentUser;
+  }
+
   List<Widget> buildListView(BuildContext context) {
     if (Platform.isAndroid) {
       return <Widget>[
@@ -244,6 +284,45 @@ class _LoginState extends State<Login> {
             onPressed: () async {
               await showDialogInsertEmailReset();
             }),
+        Divider(),
+        RaisedButton(
+          child: Text("Accedi con Google"),
+          onPressed: () async {
+            User currentUser = await signInWithGoogle();
+            List<String> nomi = currentUser.displayName.split(" ");
+            String username =
+                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+            await _database.collection('utenti').doc(currentUser.uid).set({
+              'nome': nomi[0],
+              'cognome': nomi[1],
+              'data_nascita': Timestamp.fromDate(DateTime.now()),
+              'username': username,
+            });
+            documentSnapshot =
+                await _database.collection('utenti').doc(currentUser.uid).get();
+            Navigator.pushNamed(context, HomePage.routeName,
+                arguments: documentSnapshot);
+          },
+        ),
+        RaisedButton(
+          child: Text("Accedi con Facebook"),
+          onPressed: () async {
+            User currentUser = await signInWithFacebook();
+            List<String> nomi = currentUser.displayName.split(" ");
+            String username =
+                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+            await _database.collection('utenti').doc(currentUser.uid).set({
+              'nome': nomi[0],
+              'cognome': nomi[1],
+              'data_nascita': Timestamp.fromDate(DateTime.now()),
+              'username': username,
+            });
+            documentSnapshot =
+                await _database.collection('utenti').doc(currentUser.uid).get();
+            Navigator.pushNamed(context, HomePage.routeName,
+                arguments: documentSnapshot);
+          },
+        ),
         Divider(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -324,6 +403,46 @@ class _LoginState extends State<Login> {
                     ],
                   );
                 });
+          },
+        ),
+        Divider(),
+        CupertinoButton.filled(
+          child: Text("Accedi con Google"),
+          onPressed: () async {
+            User currentUser = await signInWithGoogle();
+            List<String> nomi = currentUser.displayName.split(" ");
+            String username =
+                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+            await _database.collection('utenti').doc(currentUser.uid).set({
+              'nome': nomi[0],
+              'cognome': nomi[1],
+              'data_nascita': Timestamp.fromDate(DateTime.now()),
+              'username': username,
+            });
+            documentSnapshot =
+                await _database.collection('utenti').doc(currentUser.uid).get();
+            Navigator.pushNamed(context, HomePage.routeName,
+                arguments: documentSnapshot);
+          },
+        ),
+        Padding(padding: EdgeInsets.all(8)),
+        CupertinoButton.filled(
+          child: Text("Accedi con Facebook"),
+          onPressed: () async {
+            User currentUser = await signInWithFacebook();
+            List<String> nomi = currentUser.displayName.split(" ");
+            String username =
+                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+            await _database.collection('utenti').doc(currentUser.uid).set({
+              'nome': nomi[0],
+              'cognome': nomi[1],
+              'data_nascita': Timestamp.fromDate(DateTime.now()),
+              'username': username,
+            });
+            documentSnapshot =
+                await _database.collection('utenti').doc(currentUser.uid).get();
+            Navigator.pushNamed(context, HomePage.routeName,
+                arguments: documentSnapshot);
           },
         ),
         Divider(),

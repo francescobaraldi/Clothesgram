@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
+import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = "/HomePage";
@@ -17,12 +19,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _bottomIndex = 0;
+  bool isUtente = true;
 
   FirebaseAuth auth;
   FirebaseFirestore _database;
   DocumentSnapshot documentSnapshot;
 
   Utente utente;
+  Negozio negozio;
 
   @override
   void initState() {
@@ -60,7 +64,9 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    utente.nome + " " + utente.cognome,
+                    isUtente
+                        ? utente.nome + " " + utente.cognome
+                        : negozio.nomeNegozio,
                     style: TextStyle(
                       fontSize: 26,
                       color: Colors.white,
@@ -79,12 +85,14 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: Icon(Icons.settings),
             title: Text("Impostazioni"),
-            onTap: () => Navigator.pushNamed(context, DatiLogin.routeName),
+            onTap: () => Navigator.pushNamed(context, DatiLogin.routeName,
+                arguments: isUtente),
           ),
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text("Esci dall'account"),
             onTap: () async {
+              await GoogleSignIn().signOut;
               await FirebaseAuth.instance.signOut();
               Navigator.popUntil(context, ModalRoute.withName("/"));
             },
@@ -99,7 +107,9 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (BuildContext context) {
         return CupertinoActionSheet(
-          title: Text(utente.nome + " " + utente.cognome),
+          title: Text(isUtente
+              ? utente.nome + " " + utente.cognome
+              : negozio.nomeNegozio),
           actions: <Widget>[
             CupertinoActionSheetAction(
               child: Text("I miei dati"),
@@ -110,13 +120,14 @@ class _HomePageState extends State<HomePage> {
             ),
             CupertinoActionSheetAction(
               child: Text("Impostazioni"),
-              onPressed: () =>
-                  Navigator.pushNamed(context, DatiLogin.routeName),
+              onPressed: () => Navigator.pushNamed(context, DatiLogin.routeName,
+                  arguments: isUtente),
             ),
             CupertinoActionSheetAction(
               child: Text("Esci dall'account",
                   style: TextStyle(color: CupertinoColors.destructiveRed)),
               onPressed: () async {
+                await GoogleSignIn().signOut;
                 await FirebaseAuth.instance.signOut();
                 Navigator.popUntil(context, ModalRoute.withName("/"));
               },
@@ -129,7 +140,12 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     documentSnapshot = ModalRoute.of(context).settings.arguments;
-    utente = Utente.fromDocument(documentSnapshot);
+    if (documentSnapshot.reference.parent.id == "utenti") {
+      utente = Utente.fromDocument(documentSnapshot);
+    } else {
+      negozio = Negozio.fromDocument(documentSnapshot);
+      isUtente = false;
+    }
 
     List<Widget> _widgetOptions = <Widget>[
       Text("Home"),

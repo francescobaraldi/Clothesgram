@@ -345,7 +345,7 @@ class _RegistrazioneState extends State<Registrazione> {
                   ),
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: "Conferma Passorwd",
+                      labelText: "Conferma Password",
                     ),
                     onSaved: (value) => confermaPasswordController.text = value,
                     validator: (value) {
