@@ -19,12 +19,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _bottomIndex = 0;
+  bool isUtente = true;
 
   FirebaseAuth auth;
   FirebaseFirestore _database;
   DocumentSnapshot documentSnapshot;
 
   Utente utente;
+  Negozio negozio;
 
   @override
   void initState() {
@@ -62,7 +64,9 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    utente.nome + " " + utente.cognome,
+                    isUtente
+                        ? utente.nome + " " + utente.cognome
+                        : negozio.nomeNegozio,
                     style: TextStyle(
                       fontSize: 26,
                       color: Colors.white,
@@ -81,7 +85,8 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: Icon(Icons.settings),
             title: Text("Impostazioni"),
-            onTap: () => Navigator.pushNamed(context, DatiLogin.routeName),
+            onTap: () => Navigator.pushNamed(context, DatiLogin.routeName,
+                arguments: isUtente),
           ),
           ListTile(
             leading: Icon(Icons.exit_to_app),
@@ -102,7 +107,9 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (BuildContext context) {
         return CupertinoActionSheet(
-          title: Text(utente.nome + " " + utente.cognome),
+          title: Text(isUtente
+              ? utente.nome + " " + utente.cognome
+              : negozio.nomeNegozio),
           actions: <Widget>[
             CupertinoActionSheetAction(
               child: Text("I miei dati"),
@@ -113,8 +120,8 @@ class _HomePageState extends State<HomePage> {
             ),
             CupertinoActionSheetAction(
               child: Text("Impostazioni"),
-              onPressed: () =>
-                  Navigator.pushNamed(context, DatiLogin.routeName),
+              onPressed: () => Navigator.pushNamed(context, DatiLogin.routeName,
+                  arguments: isUtente),
             ),
             CupertinoActionSheetAction(
               child: Text("Esci dall'account",
@@ -133,7 +140,12 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     documentSnapshot = ModalRoute.of(context).settings.arguments;
-    utente = Utente.fromDocument(documentSnapshot);
+    if (documentSnapshot.reference.parent.id == "utenti") {
+      utente = Utente.fromDocument(documentSnapshot);
+    } else {
+      negozio = Negozio.fromDocument(documentSnapshot);
+      isUtente = false;
+    }
 
     List<Widget> _widgetOptions = <Widget>[
       Text("Home"),
