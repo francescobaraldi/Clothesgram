@@ -202,13 +202,18 @@ class _LoginState extends State<Login> {
 
   void _loginPressed() async {
     try {
+      await FirebaseAuth.instance.signOut();
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       User currentUser = FirebaseAuth.instance.currentUser;
       documentSnapshot =
           await _database.collection('utenti').doc(currentUser.uid).get();
-      Navigator.pushNamed(context, HomePage.routeName,
-          arguments: documentSnapshot);
+      if (!documentSnapshot.exists) {
+        await showDialogError();
+      } else {
+        Navigator.pushNamed(context, HomePage.routeName,
+            arguments: documentSnapshot);
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         showDialogNotExist();

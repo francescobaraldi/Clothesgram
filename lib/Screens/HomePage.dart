@@ -1,4 +1,5 @@
 import 'package:Applicazione/Screens/DatiLogin.dart';
+import 'package:Applicazione/Screens/FirstPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
@@ -94,7 +95,7 @@ class _HomePageState extends State<HomePage> {
             onTap: () async {
               await GoogleSignIn().signOut;
               await FirebaseAuth.instance.signOut();
-              Navigator.popUntil(context, ModalRoute.withName("/"));
+              Navigator.pushNamed(context, FirstPage.routeName);
             },
           ),
         ],
@@ -129,7 +130,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () async {
                 await GoogleSignIn().signOut;
                 await FirebaseAuth.instance.signOut();
-                Navigator.popUntil(context, ModalRoute.withName("/"));
+                Navigator.pushNamed(context, FirstPage.routeName);
               },
             ),
           ],
