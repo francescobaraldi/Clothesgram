@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
+import 'package:Applicazione/Models/Post.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,6 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   Utente utente;
   Negozio negozio;
+  List<Post> posts;
 
   @override
   void initState() {
@@ -139,6 +141,50 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  List<Widget> buildListPost(BuildContext context) {
+    var post;
+    List<Widget> listPost = List<Widget>();
+    if (posts == null) {
+      listPost.add(Padding(
+        padding: EdgeInsets.all(8),
+        child: Text("Hai guardato tutti i post"),
+      ));
+      return listPost;
+    }
+    for (post in posts) {
+      listPost.add(Padding(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                CircleAvatar(
+                  radius: 22,
+                  backgroundImage:
+                      AssetImage("contents/images/fotoProfilo.jpeg"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Nome Utente",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text("Post"),
+              ),
+            )
+          ],
+        ),
+      ));
+    }
+    return listPost;
+  }
+
   Widget build(BuildContext context) {
     documentSnapshot = ModalRoute.of(context).settings.arguments;
     if (documentSnapshot.reference.parent.id == "utenti") {
@@ -149,7 +195,9 @@ class _HomePageState extends State<HomePage> {
     }
 
     List<Widget> _widgetOptions = <Widget>[
-      Text("Home"),
+      ListView(
+        children: buildListPost(context),
+      ),
       Text("Ricerca"),
       Text("Profilo"),
     ];
