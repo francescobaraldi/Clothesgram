@@ -10,6 +10,8 @@ import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = "/HomePage";
@@ -26,10 +28,13 @@ class _HomePageState extends State<HomePage> {
   FirebaseAuth auth;
   FirebaseFirestore _database;
   DocumentSnapshot documentSnapshot;
+  QuerySnapshot snapshot;
 
   Utente utente;
   Negozio negozio;
   List<Post> posts;
+
+  PickedFile file;
 
   @override
   void initState() {
@@ -42,6 +47,56 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _bottomIndex = index;
     });
+  }
+
+  ImagePicker imagePicker;
+
+  Future<void> showDialogPostAndroid() async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Posta un articolo"),
+            actions: <Widget>[
+              ListTile(
+                leading: Icon(Icons.camera),
+                title: Text("Scatta una foto"),
+                onTap: () async {
+                  Navigator.pop(context);
+                  PickedFile imageFile = await imagePicker.getImage(
+                      source: ImageSource.camera,
+                      maxWidth: 1920,
+                      maxHeight: 1200,
+                      imageQuality: 80);
+                  setState(() {
+                    file = imageFile;
+                  });
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text("Scegli dalla libreria"),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  PickedFile imageFile = await imagePicker.getImage(
+                      source: ImageSource.gallery,
+                      maxWidth: 1920,
+                      maxHeight: 1200,
+                      imageQuality: 80);
+                  setState(() {
+                    file = imageFile;
+                  });
+                },
+              ),
+              ListTile(
+                title: const Text("Cancella"),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
   }
 
   Widget buildDrawer() {
@@ -143,14 +198,19 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> buildListPost(BuildContext context) {
     var post;
-    List<Widget> listPost = List<Widget>();
-    if (posts == null) {
-      listPost.add(Padding(
-        padding: EdgeInsets.all(8),
-        child: Text("Hai guardato tutti i post"),
-      ));
-      return listPost;
+    if (snapshot == null) {
+      return <Widget>[
+        Padding(
+          padding: EdgeInsets.all(8),
+          child: Text("Non ci sono post disponibili"),
+        )
+      ];
     }
+    posts.clear();
+    for (var i in snapshot.docs) {
+      posts.add(Post.fromDocument(i));
+    }
+    List<Widget> listPost = [];
     for (post in posts) {
       listPost.add(Padding(
         padding: EdgeInsets.all(8),
@@ -166,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Nome Utente",
+                  child: Text(post.nomeOwner,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
@@ -175,14 +235,19 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: Text("Post"),
+                child: Image.network('post.mediaUrl'),
               ),
-            )
+            ),
           ],
         ),
       ));
     }
     return listPost;
+  }
+
+  void _refresh() async {
+    snapshot = await _database.collection('posts').orderBy('timestamp').get();
+    setState(() {});
   }
 
   Widget build(BuildContext context) {
@@ -195,9 +260,54 @@ class _HomePageState extends State<HomePage> {
     }
 
     List<Widget> _widgetOptions = <Widget>[
-      ListView(
-        children: buildListPost(context),
+      RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView(
+          children: buildListPost(context),
+        ),
       ),
+      Builder(builder: (context) {
+        Platform.isIOS
+            ? CupertinoActionSheet(
+                title: Text("Posta un articolo"),
+                actions: <Widget>[
+                  CupertinoActionSheetAction(
+                    child: Text("Scatta una foto"),
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      PickedFile imageFile = await imagePicker.getImage(
+                          source: ImageSource.camera,
+                          maxWidth: 1920,
+                          maxHeight: 1200,
+                          imageQuality: 80);
+                      setState(() {
+                        file = imageFile;
+                      });
+                    },
+                  ),
+                  CupertinoActionSheetAction(
+                    child: Text("Scegli dalla libreria"),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      PickedFile imageFile = await imagePicker.getImage(
+                          source: ImageSource.gallery,
+                          maxWidth: 1920,
+                          maxHeight: 1200,
+                          imageQuality: 80);
+                      setState(() {
+                        file = imageFile;
+                      });
+                    },
+                  ),
+                ],
+              )
+            : showDialogPostAndroid();
+        _database.collection('posts').add({
+          'ownerId': FirebaseAuth.instance.currentUser.uid,
+          'nomeOwner': FirebaseAuth.instance.currentUser.displayName,
+          'mediaUrl': 
+        });
+      }),
       Text("Ricerca"),
       Text("Profilo"),
     ];
@@ -227,6 +337,10 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
               title: Text("Home"),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add),
+              title: Text("Aggiungi"),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.search),
@@ -265,6 +379,10 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.home),
               title: Text("Home"),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.add),
+              title: Text("Aggiungi"),
             ),
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.search),
