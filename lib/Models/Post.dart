@@ -7,15 +7,13 @@ class Post extends StatefulWidget {
   final String postId;
   final String mediaUrl;
   final String nomeOwner;
-  final saved;
 
   Post(
       {this.ownerId,
       this.descrizione,
       this.postId,
       this.mediaUrl,
-      this.nomeOwner,
-      this.saved});
+      this.nomeOwner});
 
   factory Post.fromDocument(DocumentSnapshot documentSnapshot) {
     return Post(
@@ -24,7 +22,6 @@ class Post extends StatefulWidget {
       postId: documentSnapshot.reference.id,
       mediaUrl: documentSnapshot.get('mediaUrl'),
       nomeOwner: documentSnapshot.get('nomeOwner'),
-      saved: documentSnapshot.get('saved'),
     );
   }
 
@@ -33,21 +30,9 @@ class Post extends StatefulWidget {
       ownerId: data['ownerId'],
       descrizione: data['descrizione'],
       mediaUrl: data['mediaUrl'],
-      saved: data['saved'],
       nomeOwner: data['nomeOwner'],
       postId: data['postId'],
     );
-  }
-
-  int getSavedCount(var saved) {
-    if (saved == null) return 0;
-    var vals = saved.values;
-
-    int count = 0;
-    for (var val in vals) {
-      if (val == true) count++;
-    }
-    return count;
   }
 
   _PostState createState() => _PostState(
@@ -56,7 +41,6 @@ class Post extends StatefulWidget {
         postId: this.postId,
         mediaUrl: this.mediaUrl,
         nomeOwner: this.nomeOwner,
-        savedCount: getSavedCount(this.saved),
       );
 }
 
@@ -76,8 +60,13 @@ class _PostState extends State<Post> {
       this.nomeOwner,
       this.savedCount});
 
-  Map saves;
-  bool isSaved;
+  FirebaseFirestore _database;
+
+  @override
+  void initState() {
+    super.initState();
+    _database = FirebaseFirestore.instance;
+  }
 
   Widget build(BuildContext context) {}
 }
