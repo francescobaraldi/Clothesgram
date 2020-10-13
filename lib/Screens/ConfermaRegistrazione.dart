@@ -88,7 +88,7 @@ class ConfermaRegistrazione extends StatelessWidget {
   Widget build(BuildContext context) {
     Object arg = ModalRoute.of(context).settings.arguments;
 
-    if (arg.runtimeType == "Utente") {
+    if (arg.runtimeType.toString() == "Utente") {
       Utente utente = arg;
       if (Platform.isAndroid) {
         return Scaffold(

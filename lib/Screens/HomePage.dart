@@ -12,6 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = "/HomePage";
@@ -27,6 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   FirebaseAuth auth;
   FirebaseFirestore _database;
+  FirebaseStorage storage;
   DocumentSnapshot documentSnapshot;
   QuerySnapshot snapshot;
 
@@ -34,69 +36,22 @@ class _HomePageState extends State<HomePage> {
   Negozio negozio;
   List<Post> posts;
 
-  PickedFile file;
+  File file;
+  FileImage image;
+  StorageTaskSnapshot storageTaskSnapshot;
 
   @override
   void initState() {
     super.initState();
     _database = FirebaseFirestore.instance;
     auth = FirebaseAuth.instance;
+    storage = FirebaseStorage.instance;
   }
 
   void _tapped(int index) {
     setState(() {
       _bottomIndex = index;
     });
-  }
-
-  ImagePicker imagePicker;
-
-  Future<void> showDialogPostAndroid() async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Posta un articolo"),
-            actions: <Widget>[
-              ListTile(
-                leading: Icon(Icons.camera),
-                title: Text("Scatta una foto"),
-                onTap: () async {
-                  Navigator.pop(context);
-                  PickedFile imageFile = await imagePicker.getImage(
-                      source: ImageSource.camera,
-                      maxWidth: 1920,
-                      maxHeight: 1200,
-                      imageQuality: 80);
-                  setState(() {
-                    file = imageFile;
-                  });
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text("Scegli dalla libreria"),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  PickedFile imageFile = await imagePicker.getImage(
-                      source: ImageSource.gallery,
-                      maxWidth: 1920,
-                      maxHeight: 1200,
-                      imageQuality: 80);
-                  setState(() {
-                    file = imageFile;
-                  });
-                },
-              ),
-              ListTile(
-                title: const Text("Cancella"),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          );
-        });
   }
 
   Widget buildDrawer() {
@@ -114,9 +69,8 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(8),
                   child: CircleAvatar(
                     radius: 32,
-                    backgroundImage: AssetImage(
-                      "contents/images/fotoProfilo.jpeg",
-                    ),
+                    backgroundImage: NetworkImage(
+                        isUtente ? utente.photoProfile : negozio.photoProfile),
                   ),
                 ),
                 Padding(
@@ -196,6 +150,90 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> showDialogPostAndroid() async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Posta un articolo"),
+            actions: <Widget>[
+              ListTile(
+                leading: Icon(Icons.camera),
+                title: Text("Scatta una foto"),
+                onTap: () async {
+                  Navigator.pop(context);
+                  ImagePicker imagePicker = ImagePicker();
+                  PickedFile pickedFile =
+                      await imagePicker.getImage(source: ImageSource.camera);
+                  setState(() {
+                    file = File(pickedFile.path);
+                    image = FileImage(file);
+                  });
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text("Scegli dalla libreria"),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  ImagePicker imagePicker = ImagePicker();
+                  PickedFile pickedFile =
+                      await imagePicker.getImage(source: ImageSource.gallery);
+                  setState(() {
+                    file = File(pickedFile.path);
+                    image = FileImage(file);
+                  });
+                },
+              ),
+              ListTile(
+                title: const Text("Cancella"),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  Future<void> showDialogPostIOS() async {
+    return showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoActionSheet(
+            title: Text("Posta un articolo"),
+            actions: <Widget>[
+              CupertinoActionSheetAction(
+                child: Text("Scatta una foto"),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  ImagePicker imagePicker = ImagePicker();
+                  PickedFile pickedFile =
+                      await imagePicker.getImage(source: ImageSource.camera);
+                  setState(() {
+                    file = File(pickedFile.path);
+                    image = FileImage(file);
+                  });
+                },
+              ),
+              CupertinoActionSheetAction(
+                child: Text("Scegli dalla libreria"),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  ImagePicker imagePicker = ImagePicker();
+                  PickedFile pickedFile =
+                      await imagePicker.getImage(source: ImageSource.gallery);
+                  setState(() {
+                    file = File(pickedFile.path);
+                    image = FileImage(file);
+                  });
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   List<Widget> buildListPost(BuildContext context) {
     var post;
     if (snapshot == null) {
@@ -221,8 +259,7 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 CircleAvatar(
                   radius: 22,
-                  backgroundImage:
-                      AssetImage("contents/images/fotoProfilo.jpeg"),
+                  backgroundImage: NetworkImage(negozio.photoProfile),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -235,7 +272,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: Image.network('post.mediaUrl'),
+                child: Image.network(post.mediaUrl),
               ),
             ),
           ],
@@ -245,9 +282,32 @@ class _HomePageState extends State<HomePage> {
     return listPost;
   }
 
-  void _refresh() async {
+  Future<void> _refresh() async {
     snapshot = await _database.collection('posts').orderBy('timestamp').get();
     setState(() {});
+  }
+
+  void putImage(File file) async {
+    storageTaskSnapshot = await storage
+        .ref()
+        .child('fotoProfilo/' + file.path.split('/').last)
+        .putFile(file)
+        .onComplete;
+    _database.collection('posts').add({
+      'ownerId': FirebaseAuth.instance.currentUser.uid,
+      'nomeOwner': FirebaseAuth.instance.currentUser.displayName,
+      'mediaUrl': storageTaskSnapshot.ref.getDownloadURL(),
+      'descrizione': "Descrizione di prova"
+    }).then((value) {
+      _database.collection('posts').doc(value.id).update({
+        'postId': value.id,
+      });
+    });
+  }
+
+  Widget buildPostPost(BuildContext context) {
+    Platform.isIOS ? showDialogPostIOS() : showDialogPostAndroid();
+    putImage(file);
   }
 
   Widget build(BuildContext context) {
@@ -266,48 +326,7 @@ class _HomePageState extends State<HomePage> {
           children: buildListPost(context),
         ),
       ),
-      Builder(builder: (context) {
-        Platform.isIOS
-            ? CupertinoActionSheet(
-                title: Text("Posta un articolo"),
-                actions: <Widget>[
-                  CupertinoActionSheetAction(
-                    child: Text("Scatta una foto"),
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      PickedFile imageFile = await imagePicker.getImage(
-                          source: ImageSource.camera,
-                          maxWidth: 1920,
-                          maxHeight: 1200,
-                          imageQuality: 80);
-                      setState(() {
-                        file = imageFile;
-                      });
-                    },
-                  ),
-                  CupertinoActionSheetAction(
-                    child: Text("Scegli dalla libreria"),
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      PickedFile imageFile = await imagePicker.getImage(
-                          source: ImageSource.gallery,
-                          maxWidth: 1920,
-                          maxHeight: 1200,
-                          imageQuality: 80);
-                      setState(() {
-                        file = imageFile;
-                      });
-                    },
-                  ),
-                ],
-              )
-            : showDialogPostAndroid();
-        _database.collection('posts').add({
-          'ownerId': FirebaseAuth.instance.currentUser.uid,
-          'nomeOwner': FirebaseAuth.instance.currentUser.displayName,
-          'mediaUrl': 
-        });
-      }),
+      buildPostPost(context),
       Text("Ricerca"),
       Text("Profilo"),
     ];
