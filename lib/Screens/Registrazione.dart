@@ -7,6 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Applicazione/showCupertinoDatePicker.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 const double _kDateTimePickerHeight = 216;
 
@@ -28,6 +31,7 @@ class _RegistrazioneState extends State<Registrazione> {
   User user;
 
   FirebaseFirestore _database;
+  FirebaseStorage storage;
   QuerySnapshot snapshot;
   List<DocumentSnapshot> documentSnapshotList;
   DocumentReference documentReference;
@@ -42,10 +46,14 @@ class _RegistrazioneState extends State<Registrazione> {
   DateTime _selectedDate = DateTime.now();
   Timestamp t;
 
+  FileImage image;
+  File file;
+
   @override
   void initState() {
     super.initState();
     _database = FirebaseFirestore.instance;
+    storage = FirebaseStorage.instance;
   }
 
   void getDate(BuildContext context) async {
@@ -233,6 +241,15 @@ class _RegistrazioneState extends State<Registrazione> {
     }
   }
 
+  void selectImage() async {
+    ImagePicker imagePicker = ImagePicker();
+    var pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
+    setState(() {
+      file = File(pickedFile.path);
+      image = FileImage(file);
+    });
+  }
+
   void _register() async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
@@ -248,11 +265,22 @@ class _RegistrazioneState extends State<Registrazione> {
     } catch (e) {
       print(e.toString());
     }
+    StorageTaskSnapshot storageTaskSnapshot;
+    try {
+      storageTaskSnapshot = await storage
+          .ref()
+          .child('fotoProfilo/' + file.path.split('/').last)
+          .putFile(file)
+          .onComplete;
+    } on FirebaseException catch (e) {
+      print("Error");
+    }
     await _database.collection('utenti').doc(user.uid).set({
       'nome': utente.nome,
       'cognome': utente.cognome,
       'data_nascita': Timestamp.fromDate(utente.data_nascita),
       'username': utente.username,
+      'photoProfile': await storageTaskSnapshot.ref.getDownloadURL(),
     });
     Navigator.pushNamed(context, ConfermaRegistrazione.routeName,
         arguments: utente);
@@ -271,6 +299,20 @@ class _RegistrazioneState extends State<Registrazione> {
               padding: EdgeInsets.all(16),
               child: ListView(
                 children: <Widget>[
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: image,
+                  ),
+                  FlatButton(
+                    onPressed: () => selectImage(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.edit),
+                        Text("Aggiungi foto profilo"),
+                      ],
+                    ),
+                  ),
                   TextFormField(
                     decoration: InputDecoration(
                       labelText: "Nome",
@@ -399,6 +441,20 @@ class _RegistrazioneState extends State<Registrazione> {
             padding: EdgeInsets.all(16),
             child: ListView(
               children: <Widget>[
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: image,
+                ),
+                CupertinoButton(
+                  onPressed: () => selectImage(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.edit),
+                      Text("Aggiungi foto profilo"),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(

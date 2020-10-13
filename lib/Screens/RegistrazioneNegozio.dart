@@ -5,6 +5,9 @@ import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Screens/ConfermaRegistrazione.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 const double _kDateTimePickerHeight = 216;
 
@@ -25,6 +28,7 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
   User user;
 
   FirebaseFirestore _database;
+  FirebaseStorage storage;
   QuerySnapshot snapshot;
   List<DocumentSnapshot> documentSnapshotList;
   DocumentReference documentReference;
@@ -37,10 +41,14 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confermaPasswordController = TextEditingController();
 
+  FileImage image;
+  File file;
+
   @override
   void initState() {
     super.initState();
     _database = FirebaseFirestore.instance;
+    storage = FirebaseStorage.instance;
   }
 
   Future<void> showDialogAlreadyExist() async {
@@ -219,6 +227,15 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
     }
   }
 
+  void selectImage() async {
+    ImagePicker imagePicker = ImagePicker();
+    var pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
+    setState(() {
+      file = File(pickedFile.path);
+      image = FileImage(file);
+    });
+  }
+
   void _register() async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
@@ -234,11 +251,22 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
     } catch (e) {
       print(e.toString());
     }
+    StorageTaskSnapshot storageTaskSnapshot;
+    try {
+      storageTaskSnapshot = await storage
+          .ref()
+          .child('fotoProfilo/' + file.path.split('/').last)
+          .putFile(file)
+          .onComplete;
+    } on FirebaseException catch (e) {
+      print("Error");
+    }
     await _database.collection('negozi').doc(user.uid).set({
       'nomeNegozio': negozio.nomeNegozio,
       'citta': negozio.citta,
       'via': negozio.via,
       'numeroCivico': negozio.numeroCivico,
+      'photoProfile': await storageTaskSnapshot.ref.getDownloadURL(),
     });
     Navigator.pushNamed(context, ConfermaRegistrazione.routeName,
         arguments: negozio);
@@ -257,6 +285,20 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
               padding: EdgeInsets.all(16),
               child: ListView(
                 children: <Widget>[
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: image,
+                  ),
+                  FlatButton(
+                    onPressed: () => selectImage(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.edit),
+                        Text("Aggiungi foto profilo"),
+                      ],
+                    ),
+                  ),
                   TextFormField(
                     decoration: InputDecoration(
                       labelText: "Nome negozio",
@@ -381,6 +423,20 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
             padding: EdgeInsets.all(16),
             child: ListView(
               children: <Widget>[
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: image,
+                ),
+                CupertinoButton(
+                  onPressed: () => selectImage(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.edit),
+                      Text("Aggiungi foto profilo"),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
@@ -411,7 +467,6 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                     prefix: Text("Numero civico"),
                     placeholder: "Numero civico",
                     controller: numeroCivicoController,
-                    obscureText: true,
                   ),
                 ),
                 Padding(

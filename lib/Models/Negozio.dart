@@ -6,6 +6,7 @@ class Negozio {
   String citta;
   String via;
   int numeroCivico;
+  String photoProfile;
 
   Negozio({
     this.documentId,
@@ -13,6 +14,7 @@ class Negozio {
     this.citta,
     this.via,
     this.numeroCivico,
+    this.photoProfile,
   });
 
   factory Negozio.fromDocument(DocumentSnapshot documentSnapshot) {
@@ -22,6 +24,7 @@ class Negozio {
       citta: documentSnapshot.get('citta'),
       via: documentSnapshot.get('via'),
       numeroCivico: documentSnapshot.get('numeroCivico'),
+      photoProfile: documentSnapshot.get('photoProfile'),
     );
   }
 }
