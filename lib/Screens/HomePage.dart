@@ -25,8 +25,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _bottomIndex = 0;
   int _page = 0;
+  int _index = 0;
   bool isUtente = true;
 
   FirebaseAuth auth;
@@ -52,41 +52,120 @@ class _HomePageState extends State<HomePage> {
     pageController = PageController();
   }
 
-  void _tapped(int index) {
-    pageController.jumpToPage(index);
+  void _tapped(int page) {
+    pageController.jumpToPage(page);
   }
 
-  void pageChanged(int page) {
+  void _tappedIOS(int index) {
+    setState(() {
+      _index = index;
+    });
+  }
+
+  void _pageChanged(int page) {
     setState(() {
       _page = page;
     });
+  }
+
+  List<Widget> buildListPageViewUtente() {
+    return <Widget>[
+      Container(
+        child: Feed(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
+      ),
+      Container(
+        child: Text("Ricerca"),
+      ),
+      Container(
+        child: Text("Profilo"),
+      ),
+    ];
+  }
+
+  List<Widget> buildListPageViewNegozio() {
+    return <Widget>[
+      Container(
+        child: Feed(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
+      ),
+      Container(
+        child: CreatePost(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
+      ),
+      Container(
+        child: Text("Ricerca"),
+      ),
+      Container(
+        child: Text("Profilo"),
+      ),
+    ];
+  }
+
+  List<BottomNavigationBarItem> buildListNavigationBarUtente() {
+    return <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        backgroundColor: Colors.blue,
+        icon: Icon(Icons.home),
+        label: "Home",
+      ),
+      BottomNavigationBarItem(
+        backgroundColor: Colors.blue,
+        icon: Icon(Icons.search),
+        label: "Cerca",
+      ),
+      BottomNavigationBarItem(
+        backgroundColor: Colors.blue,
+        icon: Icon(Icons.account_circle),
+        label: "Profilo",
+      ),
+    ];
+  }
+
+  List<BottomNavigationBarItem> buildListNavigationBarNegozio() {
+    return <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        backgroundColor: Colors.blue,
+        icon: Icon(Icons.home),
+        label: "Home",
+      ),
+      BottomNavigationBarItem(
+        backgroundColor: Colors.blue,
+        icon: Icon(Icons.add),
+        label: "Aggiungi",
+      ),
+      BottomNavigationBarItem(
+        backgroundColor: Colors.blue,
+        icon: Icon(Icons.search),
+        label: "Cerca",
+      ),
+      BottomNavigationBarItem(
+        backgroundColor: Colors.blue,
+        icon: Icon(Icons.account_circle),
+        label: "Profilo",
+      ),
+    ];
   }
 
   PageView buildPageView() {
     return PageView(
       controller: pageController,
       physics: NeverScrollableScrollPhysics(),
-      onPageChanged: pageChanged,
-      children: <Widget>[
-        Container(
-          child: Feed(
-            title: widget.title,
-            isUtente: isUtente,
-            arg: isUtente ? utente : negozio,
-            documentSnapshot: documentSnapshot,
-          ),
-        ),
-        Container(
-          child: CreatePost(
-            title: widget.title,
-            isUtente: isUtente,
-            arg: isUtente ? utente : negozio,
-            documentSnapshot: documentSnapshot,
-          ),
-        ),
-        Container(),
-        Container(),
-      ],
+      onPageChanged: _pageChanged,
+      children:
+          isUtente ? buildListPageViewUtente() : buildListPageViewNegozio(),
     );
   }
 
@@ -99,30 +178,56 @@ class _HomePageState extends State<HomePage> {
       isUtente = false;
     }
 
+    List<Widget> widgetOptionsUtente = [
+      Container(
+        child: Feed(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
+      ),
+      Container(
+        child: Text("Ricerca"),
+      ),
+      Container(
+        child: Text("Profilo"),
+      ),
+    ];
+
+    List<Widget> widgetOptionsNegozio = [
+      Container(
+        child: Feed(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
+      ),
+      Container(
+        child: CreatePost(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
+      ),
+      Container(
+        child: Text("Ricerca"),
+      ),
+      Container(
+        child: Text("Profilo"),
+      ),
+    ];
+
     if (Platform.isAndroid) {
       return Scaffold(
         body: buildPageView(),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _page,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              backgroundColor: Colors.blue,
-              icon: Icon(Icons.home),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              label: "Aggiungi",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: "Cerca",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
-              label: "Profilo",
-            ),
-          ],
+          items: isUtente
+              ? buildListNavigationBarUtente()
+              : buildListNavigationBarNegozio(),
           onTap: _tapped,
         ),
       );
@@ -133,31 +238,21 @@ class _HomePageState extends State<HomePage> {
           return CupertinoTabView(
             builder: (BuildContext context) {
               return CupertinoPageScaffold(
-                child: buildPageView(),
+                child: Center(
+                  child: isUtente
+                      ? widgetOptionsUtente[_index]
+                      : widgetOptionsNegozio[_index],
+                ),
               );
             },
           );
         },
         tabBar: CupertinoTabBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.home),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.add),
-              label: "Aggiungi",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.search),
-              label: "Cerca",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.profile_circled),
-              label: "Profilo",
-            ),
-          ],
-          onTap: _tapped,
+          currentIndex: _index,
+          items: isUtente
+              ? buildListNavigationBarUtente()
+              : buildListNavigationBarNegozio(),
+          onTap: _tappedIOS,
         ),
       );
     }
