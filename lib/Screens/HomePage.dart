@@ -1,18 +1,12 @@
 import 'package:Applicazione/Screens/CreatePost.dart';
-import 'package:Applicazione/Screens/DatiLogin.dart';
-import 'package:Applicazione/Screens/FirstPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
-import 'package:Applicazione/Models/Post.dart';
-import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:Applicazione/Screens/Feed.dart';
 

@@ -241,19 +241,23 @@ class _CreatePostState extends State<CreatePost> {
             automaticallyImplyLeading: false,
           ),
           body: Container(
-            child: Column(
+            child: ListView(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: image == null
-                        ? AssetImage('contents/images/fotoProfilo.jpeg')
-                        : image,
+                Padding(padding: EdgeInsets.all(8)),
+                Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      // fit: BoxFit.fill,
+                      image: image == null
+                          ? AssetImage('contents/images/fotoProfilo.png')
+                          : image,
+                    ),
                   ),
                 ),
                 ListTile(
-                  leading: Icon(Icons.camera),
+                  leading: Icon(Icons.photo_camera),
                   title: Text("Scatta una foto"),
                   onTap: () async {
                     ImagePicker imagePicker = ImagePicker();
@@ -319,21 +323,25 @@ class _CreatePostState extends State<CreatePost> {
             ),
           ),
           child: Container(
-            child: Column(
+            child: ListView(
               children: <Widget>[
+                Padding(padding: EdgeInsets.all(8)),
                 Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: image == null
-                        ? AssetImage('contents/images/fotoProfilo.jpeg')
-                        : image,
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      // fit: BoxFit.fill,
+                      image: image == null
+                          ? AssetImage('contents/images/fotoProfilo.png')
+                          : image,
+                    ),
                   ),
                 ),
                 CupertinoButton(
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.camera),
+                      Icon(CupertinoIcons.photo_camera_solid),
                       Text("Scatta una foto"),
                     ],
                   ),
@@ -350,7 +358,7 @@ class _CreatePostState extends State<CreatePost> {
                 CupertinoButton(
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.photo_library),
+                      Icon(CupertinoIcons.photo_camera),
                       Text("Scegli dalla libreria"),
                     ],
                   ),
