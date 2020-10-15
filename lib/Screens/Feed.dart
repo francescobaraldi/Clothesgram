@@ -11,7 +11,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class Feed extends StatefulWidget {
@@ -44,6 +43,7 @@ class _FeedState extends State<Feed> {
     _database = FirebaseFirestore.instance;
     auth = FirebaseAuth.instance;
     storage = FirebaseStorage.instance;
+    _refresh();
   }
 
   Widget buildDrawer() {
@@ -155,7 +155,7 @@ class _FeedState extends State<Feed> {
       return <Widget>[
         Padding(
           padding: EdgeInsets.all(8),
-          child: Text("Non ci sono post disponibili"),
+          child: Text("Aggiorna la pagina"),
         )
       ];
     }
@@ -163,13 +163,15 @@ class _FeedState extends State<Feed> {
       return <Widget>[
         Padding(
             padding: EdgeInsets.all(8),
-            child: Text("Non ci sono post disponibili2")),
+            child: Text("Non ci sono post disponibili")),
       ];
     }
     if (posts != null) posts.clear();
     for (var i in snapshot.docs) {
       posts.add(Post.fromDocument(i));
     }
+    print("DEBUG: " + posts.length.toString());
+
     List<Widget> listPost = [];
     for (post in posts) {
       listPost.add(Padding(
@@ -181,7 +183,7 @@ class _FeedState extends State<Feed> {
               children: <Widget>[
                 CircleAvatar(
                   radius: 22,
-                  backgroundImage: NetworkImage(negozio.photoProfile),
+                  backgroundImage: NetworkImage(post.photoProfileOwner),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -197,6 +199,11 @@ class _FeedState extends State<Feed> {
                 child: Image.network(post.mediaUrl),
               ),
             ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(post.descrizione),
+            ),
+            Divider(),
           ],
         ),
       ));

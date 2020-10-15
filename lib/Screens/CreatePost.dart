@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
-import 'package:Applicazione/Models/Post.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -204,9 +203,10 @@ class _CreatePostState extends State<CreatePost> {
         .onComplete;
     await _database.collection('posts').add({
       'ownerId': FirebaseAuth.instance.currentUser.uid,
-      'nomeOwner': FirebaseAuth.instance.currentUser.displayName,
+      'nomeOwner': negozio.nomeNegozio,
       'mediaUrl': await storageTaskSnapshot.ref.getDownloadURL(),
-      'descrizione': descrizioneController.text
+      'descrizione': descrizioneController.text,
+      'photoProfileOwner': negozio.photoProfile,
     }).then((value) {
       _database.collection('posts').doc(value.id).update({
         'postId': value.id,
@@ -242,7 +242,6 @@ class _CreatePostState extends State<CreatePost> {
           ),
           body: Container(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -281,7 +280,7 @@ class _CreatePostState extends State<CreatePost> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: TextField(
+                  child: TextFormField(
                     controller: descrizioneController,
                   ),
                 ),
@@ -296,7 +295,7 @@ class _CreatePostState extends State<CreatePost> {
                   },
                 ),
                 ListTile(
-                  title: const Text("Cancella"),
+                  title: const Text("Cancella le modifiche"),
                   onTap: () {
                     setState(() {
                       descrizioneController.text = "";
@@ -321,9 +320,8 @@ class _CreatePostState extends State<CreatePost> {
           ),
           child: Container(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Padding(
+                Container(
                   padding: const EdgeInsets.all(8.0),
                   child: CircleAvatar(
                     radius: 50,
@@ -332,7 +330,7 @@ class _CreatePostState extends State<CreatePost> {
                         : image,
                   ),
                 ),
-                CupertinoButton.filled(
+                CupertinoButton(
                   child: Row(
                     children: <Widget>[
                       Icon(Icons.camera),
@@ -349,7 +347,7 @@ class _CreatePostState extends State<CreatePost> {
                     });
                   },
                 ),
-                CupertinoButton.filled(
+                CupertinoButton(
                   child: Row(
                     children: <Widget>[
                       Icon(Icons.photo_library),
@@ -373,7 +371,7 @@ class _CreatePostState extends State<CreatePost> {
                     controller: descrizioneController,
                   ),
                 ),
-                CupertinoButton.filled(
+                CupertinoButton(
                   child: const Text(
                     "Posta",
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -383,8 +381,8 @@ class _CreatePostState extends State<CreatePost> {
                     showDialogPostPosted();
                   },
                 ),
-                CupertinoButton.filled(
-                  child: const Text("Cancella"),
+                CupertinoButton(
+                  child: const Text("Cancella le modifiche"),
                   onPressed: () {
                     setState(() {
                       descrizioneController.text = "";
