@@ -16,6 +16,7 @@ class FirstPage extends StatelessWidget {
         appBar: AppBar(
           title: Text(title),
           backgroundColor: Colors.blue,
+          automaticallyImplyLeading: false,
         ),
         body: SafeArea(
           child: Center(
@@ -49,6 +50,7 @@ class FirstPage extends StatelessWidget {
     if (Platform.isIOS) {
       return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
+          automaticallyImplyLeading: false,
           middle: Text(title),
         ),
         child: SafeArea(

@@ -145,7 +145,6 @@ class _FeedState extends State<Feed> {
 
   Future<void> _refresh() async {
     snapshot = await _database.collection('posts').get();
-    print("DEBUG: " + snapshot.docs.length.toString());
     setState(() {});
   }
 
@@ -170,7 +169,6 @@ class _FeedState extends State<Feed> {
     for (var i in snapshot.docs) {
       posts.add(Post.fromDocument(i));
     }
-    print("DEBUG: " + posts.length.toString());
 
     List<Widget> listPost = [];
     for (post in posts) {
@@ -199,10 +197,7 @@ class _FeedState extends State<Feed> {
                 child: Image.network(post.mediaUrl),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(post.descrizione),
-            ),
+            Text(post.descrizione, textAlign: TextAlign.start),
             Divider(),
           ],
         ),
