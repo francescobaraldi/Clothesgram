@@ -7,6 +7,7 @@ class Post {
   final String mediaUrl;
   final String nomeOwner;
   final String photoProfileOwner;
+  final String prezzo;
 
   Post(
       {this.ownerId,
@@ -14,7 +15,8 @@ class Post {
       this.postId,
       this.mediaUrl,
       this.nomeOwner,
-      this.photoProfileOwner});
+      this.photoProfileOwner,
+      this.prezzo});
 
   factory Post.fromDocument(DocumentSnapshot documentSnapshot) {
     return Post(
@@ -24,6 +26,7 @@ class Post {
       mediaUrl: documentSnapshot.get('mediaUrl'),
       nomeOwner: documentSnapshot.get('nomeOwner'),
       photoProfileOwner: documentSnapshot.get('photoProfileOwner'),
+      prezzo: documentSnapshot.get('prezzo'),
     );
   }
 }

@@ -39,6 +39,7 @@ class _CreatePostState extends State<CreatePost> {
   Negozio negozio;
 
   TextEditingController descrizioneController = TextEditingController();
+  TextEditingController prezzoController = TextEditingController();
 
   @override
   void initState() {
@@ -159,6 +160,7 @@ class _CreatePostState extends State<CreatePost> {
                   onPressed: () {
                     setState(() {
                       descrizioneController = TextEditingController();
+                      prezzoController = TextEditingController();
                       file = null;
                       image = null;
                     });
@@ -183,6 +185,7 @@ class _CreatePostState extends State<CreatePost> {
                   onPressed: () {
                     setState(() {
                       descrizioneController = TextEditingController();
+                      prezzoController = TextEditingController();
                       file = null;
                       image = null;
                     });
@@ -207,6 +210,7 @@ class _CreatePostState extends State<CreatePost> {
       'mediaUrl': await storageTaskSnapshot.ref.getDownloadURL(),
       'descrizione': descrizioneController.text,
       'photoProfileOwner': negozio.photoProfile,
+      'prezzo': prezzoController.text,
     }).then((value) {
       _database.collection('posts').doc(value.id).update({
         'postId': value.id,
@@ -288,6 +292,12 @@ class _CreatePostState extends State<CreatePost> {
                     controller: descrizioneController,
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: prezzoController,
+                  ),
+                ),
                 ListTile(
                   title: const Text(
                     "Posta",
@@ -303,6 +313,7 @@ class _CreatePostState extends State<CreatePost> {
                   onTap: () {
                     setState(() {
                       descrizioneController.text = "";
+                      prezzoController.text = "";
                       image = null;
                       file = null;
                     });
@@ -379,6 +390,13 @@ class _CreatePostState extends State<CreatePost> {
                     controller: descrizioneController,
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CupertinoTextField(
+                    placeholder: "Prezzo",
+                    controller: prezzoController,
+                  ),
+                ),
                 CupertinoButton(
                   child: const Text(
                     "Posta",
@@ -394,6 +412,7 @@ class _CreatePostState extends State<CreatePost> {
                   onPressed: () {
                     setState(() {
                       descrizioneController.text = "";
+                      prezzoController.text = "";
                       image = null;
                       file = null;
                     });
