@@ -143,12 +143,201 @@ class _FeedState extends State<Feed> {
     );
   }
 
+  Future<void> showDialogPostSaved() async {
+    if (Platform.isAndroid) {
+      return showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Post salvato correttamente"),
+              content: Text("Il post è stato salvato!"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
+    if (Platform.isIOS) {
+      return showCupertinoDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text("Post salvato correttamente"),
+              content: Text("Il post è stato salvato!"),
+              actions: <Widget>[
+                CupertinoButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
+  }
+
+  Future<void> showDialogAlreadySaved() async {
+    if (Platform.isAndroid) {
+      return showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Questo post è già stato salvato"),
+              content: Text("Non puoi salvare due volte lo stesso post"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
+    if (Platform.isIOS) {
+      return showCupertinoDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text("Questo post è già stato salvato"),
+              content: Text("Non puoi salvare due volte lo stesso post"),
+              actions: <Widget>[
+                CupertinoButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
+  }
+
   Future<void> _refresh() async {
     snapshot = await _database.collection('posts').get();
     setState(() {});
   }
 
-  List<Widget> buildListPost(BuildContext context) {
+  List<Widget> buildListPostUtente(BuildContext context) {
+    var post;
+    if (snapshot == null) {
+      return <Widget>[
+        Padding(
+          padding: EdgeInsets.all(8),
+          child: Text("Aggiorna la pagina"),
+        )
+      ];
+    }
+    if (snapshot.docs.length == 0) {
+      return <Widget>[
+        Padding(
+            padding: EdgeInsets.all(8),
+            child: Text("Non ci sono post disponibili")),
+      ];
+    }
+    if (posts != null) posts.clear();
+    for (var i in snapshot.docs) {
+      posts.add(Post.fromDocument(i));
+    }
+
+    List<Widget> listPost = [];
+    for (post in posts) {
+      listPost.add(Padding(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                CircleAvatar(
+                  radius: 22,
+                  backgroundImage: NetworkImage(post.photoProfileOwner),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(post.nomeOwner, //Qui dice che è null
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ),
+                Platform.isAndroid
+                    ? IconButton(
+                        icon: Icon(Icons.save),
+                        onPressed: () async {
+                          QuerySnapshot snapshot2 = await _database
+                              .collection('utenti')
+                              .doc(utente.documentId)
+                              .collection('postSaved')
+                              .where('postSavedId', isEqualTo: post.postId)
+                              .get();
+                          if (snapshot2.docs.isNotEmpty) {
+                            showDialogAlreadySaved();
+                          }
+                          await _database
+                              .collection('posts')
+                              .doc(post.postId)
+                              .update({'numSalvati': post.numSalvati + 1});
+                          await _database
+                              .collection('utenti')
+                              .doc(utente.documentId)
+                              .collection('postSaved')
+                              .add({'postSavedId': post.postId});
+                          showDialogPostSaved();
+                        })
+                    : CupertinoButton(
+                        child: Icon(CupertinoIcons.add),
+                        onPressed: () async {
+                          QuerySnapshot snapshot2 = await _database
+                              .collection('utenti')
+                              .doc(utente.documentId)
+                              .collection('postSaved')
+                              .where('postSavedId', isEqualTo: post.postId)
+                              .get();
+                          if (snapshot2.docs.isNotEmpty) {
+                            showDialogAlreadySaved();
+                          } else {
+                            await _database
+                                .collection('posts')
+                                .doc(post.postId)
+                                .update({'numSalvati': post.numSalvati + 1});
+                            await _database
+                                .collection('utenti')
+                                .doc(utente.documentId)
+                                .collection('postSaved')
+                                .add({'postSavedId': post.postId});
+                            showDialogPostSaved();
+                          }
+                        })
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Image.network(post.mediaUrl),
+              ),
+            ),
+            Text(post.descrizione + "  ---  € " + post.prezzo,
+                textAlign: TextAlign.start),
+            Divider(),
+          ],
+        ),
+      ));
+    }
+    return listPost;
+  }
+
+  List<Widget> buildListPostNegozio(BuildContext context) {
     var post;
     if (snapshot == null) {
       return <Widget>[
@@ -233,7 +422,9 @@ class _FeedState extends State<Feed> {
         ),
         body: RefreshIndicator(
           child: ListView(
-            children: buildListPost(context),
+            children: widget.isUtente
+                ? buildListPostUtente(context)
+                : buildListPostNegozio(context),
           ),
           onRefresh: _refresh,
         ),
@@ -257,7 +448,9 @@ class _FeedState extends State<Feed> {
             SliverSafeArea(
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
-                  buildListPost(context),
+                  widget.isUtente
+                      ? buildListPostUtente(context)
+                      : buildListPostNegozio(context),
                 ),
               ),
             ),
