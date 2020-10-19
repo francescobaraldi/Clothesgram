@@ -267,7 +267,7 @@ class _FeedState extends State<Feed> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(post.nomeOwner, //Qui dice che è null
+                  child: Text(post.nomeOwner,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
@@ -283,17 +283,18 @@ class _FeedState extends State<Feed> {
                               .get();
                           if (snapshot2.docs.isNotEmpty) {
                             showDialogAlreadySaved();
+                          } else {
+                            await _database
+                                .collection('posts')
+                                .doc(post.postId)
+                                .update({'numSalvati': post.numSalvati + 1});
+                            await _database
+                                .collection('utenti')
+                                .doc(utente.documentId)
+                                .collection('postSaved')
+                                .add({'postSavedId': post.postId});
+                            showDialogPostSaved();
                           }
-                          await _database
-                              .collection('posts')
-                              .doc(post.postId)
-                              .update({'numSalvati': post.numSalvati + 1});
-                          await _database
-                              .collection('utenti')
-                              .doc(utente.documentId)
-                              .collection('postSaved')
-                              .add({'postSavedId': post.postId});
-                          showDialogPostSaved();
                         })
                     : CupertinoButton(
                         child: Icon(CupertinoIcons.add),
@@ -374,7 +375,7 @@ class _FeedState extends State<Feed> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(post.nomeOwner, //Qui dice che è null
+                  child: Text(post.nomeOwner,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
