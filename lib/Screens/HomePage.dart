@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:Applicazione/Screens/Feed.dart';
+import 'package:Applicazione/Screens/Ricerca.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = "/HomePage";
@@ -73,7 +74,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       Container(
-        child: Text("Ricerca"),
+        child: Ricerca(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
       ),
       Container(
         child: Text("Profilo"),
@@ -100,7 +106,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       Container(
-        child: Text("Ricerca"),
+        child: Ricerca(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
       ),
       Container(
         child: Text("Profilo"),
@@ -182,7 +193,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       Container(
-        child: Text("Ricerca"),
+        child: Ricerca(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
       ),
       Container(
         child: Text("Profilo"),
@@ -207,7 +223,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       Container(
-        child: Text("Ricerca"),
+        child: Ricerca(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
       ),
       Container(
         child: Text("Profilo"),
