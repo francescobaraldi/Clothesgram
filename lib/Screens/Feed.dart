@@ -28,7 +28,6 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> {
   List<Post> posts = [];
-  int index;
 
   Utente utente;
   Negozio negozio;
@@ -228,178 +227,11 @@ class _FeedState extends State<Feed> {
 
   Future<void> _refresh() async {
     snapshot = await _database.collection('posts').get();
+    if (posts != null) posts.clear();
+    for (var i in snapshot.docs) {
+      posts.add(Post.fromDocument(i));
+    }
     setState(() {});
-  }
-
-  List<Widget> buildListPostUtente(BuildContext context) {
-    var post;
-    if (snapshot == null) {
-      return <Widget>[
-        Padding(
-          padding: EdgeInsets.all(8),
-          child: Text("Aggiorna la pagina"),
-        )
-      ];
-    }
-    if (snapshot.docs.length == 0) {
-      return <Widget>[
-        Padding(
-            padding: EdgeInsets.all(8),
-            child: Text("Non ci sono post disponibili")),
-      ];
-    }
-    if (posts != null) posts.clear();
-    for (var i in snapshot.docs) {
-      posts.add(Post.fromDocument(i));
-    }
-
-    List<Widget> listPost = [];
-    index = 0;
-    for (post in posts) {
-      listPost.add(Padding(
-        padding: EdgeInsets.all(8),
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                CircleAvatar(
-                  radius: 22,
-                  backgroundImage: NetworkImage(post.photoProfileOwner),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(post.nomeOwner,
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
-                  ),
-                ),
-                Platform.isAndroid
-                    ? IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () async {
-                          QuerySnapshot snapshot2 = await _database
-                              .collection('utenti')
-                              .doc(utente.documentId)
-                              .collection('postSaved')
-                              .where('postSavedId', isEqualTo: post.postId)
-                              .get();
-                          if (snapshot2.docs.isNotEmpty) {
-                            showDialogAlreadySaved();
-                          } else {
-                            await _database
-                                .collection('posts')
-                                .doc(post.postId)
-                                .update({'numSalvati': post.numSalvati + 1});
-                            await _database
-                                .collection('utenti')
-                                .doc(utente.documentId)
-                                .collection('postSaved')
-                                .add({'postSavedId': post.postId});
-                            showDialogPostSaved();
-                          }
-                        })
-                    : CupertinoButton(
-                        child: Icon(CupertinoIcons.add_circled),
-                        onPressed: () async {
-                          QuerySnapshot snapshot2 = await _database
-                              .collection('utenti')
-                              .doc(utente.documentId)
-                              .collection('postSaved')
-                              .where('postSavedId', isEqualTo: post.postId)
-                              .get();
-                          if (snapshot2.docs.isNotEmpty) {
-                            showDialogAlreadySaved();
-                          } else {
-                            await _database
-                                .collection('posts')
-                                .doc(post.postId)
-                                .update({'numSalvati': post.numSalvati + 1});
-                            await _database
-                                .collection('utenti')
-                                .doc(utente.documentId)
-                                .collection('postSaved')
-                                .add({'postSavedId': post.postId});
-                            showDialogPostSaved();
-                          }
-                        })
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Image.network(post.mediaUrl),
-              ),
-            ),
-            Text(post.descrizione + "  ---  € " + post.prezzo,
-                textAlign: TextAlign.start),
-            Divider(),
-          ],
-        ),
-      ));
-      index++;
-    }
-    return listPost;
-  }
-
-  List<Widget> buildListPostNegozio(BuildContext context) {
-    var post;
-    if (snapshot == null) {
-      return <Widget>[
-        Padding(
-          padding: EdgeInsets.all(8),
-          child: Text("Aggiorna la pagina"),
-        )
-      ];
-    }
-    if (snapshot.docs.length == 0) {
-      return <Widget>[
-        Padding(
-            padding: EdgeInsets.all(8),
-            child: Text("Non ci sono post disponibili")),
-      ];
-    }
-    if (posts != null) posts.clear();
-    for (var i in snapshot.docs) {
-      posts.add(Post.fromDocument(i));
-    }
-
-    List<Widget> listPost = [];
-    for (post in posts) {
-      listPost.add(Padding(
-        padding: EdgeInsets.all(8),
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                CircleAvatar(
-                  radius: 22,
-                  backgroundImage: NetworkImage(post.photoProfileOwner),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(post.nomeOwner,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Image.network(post.mediaUrl),
-              ),
-            ),
-            Text(post.descrizione + "  ---  € " + post.prezzo,
-                textAlign: TextAlign.start),
-            Divider(),
-          ],
-        ),
-      ));
-    }
-    return listPost;
   }
 
   Widget build(BuildContext context) {
@@ -427,10 +259,147 @@ class _FeedState extends State<Feed> {
           automaticallyImplyLeading: false,
         ),
         body: RefreshIndicator(
-          child: ListView(
-            children: widget.isUtente
-                ? buildListPostUtente(context)
-                : buildListPostNegozio(context),
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              if (widget.isUtente) {
+                return Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          CircleAvatar(
+                            radius: 22,
+                            backgroundImage:
+                                NetworkImage(posts[index].photoProfileOwner),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(posts[index].nomeOwner,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                          Platform.isAndroid
+                              ? IconButton(
+                                  icon: Icon(Icons.add),
+                                  onPressed: () async {
+                                    QuerySnapshot snapshot2 = await _database
+                                        .collection('utenti')
+                                        .doc(utente.documentId)
+                                        .collection('postSaved')
+                                        .where('postSavedId',
+                                            isEqualTo: posts[index].postId)
+                                        .get();
+                                    if (snapshot2.docs.isNotEmpty) {
+                                      showDialogAlreadySaved();
+                                    } else {
+                                      await _database
+                                          .collection('posts')
+                                          .doc(posts[index].postId)
+                                          .update({
+                                        'numSalvati':
+                                            posts[index].numSalvati + 1
+                                      });
+                                      await _database
+                                          .collection('utenti')
+                                          .doc(utente.documentId)
+                                          .collection('postSaved')
+                                          .add({
+                                        'postSavedId': posts[index].postId
+                                      });
+                                      showDialogPostSaved();
+                                    }
+                                  })
+                              : CupertinoButton(
+                                  child: Icon(CupertinoIcons.add_circled),
+                                  onPressed: () async {
+                                    QuerySnapshot snapshot2 = await _database
+                                        .collection('utenti')
+                                        .doc(utente.documentId)
+                                        .collection('postSaved')
+                                        .where('postSavedId',
+                                            isEqualTo: posts[index].postId)
+                                        .get();
+                                    if (snapshot2.docs.isNotEmpty) {
+                                      showDialogAlreadySaved();
+                                    } else {
+                                      await _database
+                                          .collection('posts')
+                                          .doc(posts[index].postId)
+                                          .update({
+                                        'numSalvati':
+                                            posts[index].numSalvati + 1
+                                      });
+                                      await _database
+                                          .collection('utenti')
+                                          .doc(utente.documentId)
+                                          .collection('postSaved')
+                                          .add({
+                                        'postSavedId': posts[index].postId
+                                      });
+                                      showDialogPostSaved();
+                                    }
+                                  })
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Image.network(posts[index].mediaUrl),
+                        ),
+                      ),
+                      Text(
+                          posts[index].descrizione +
+                              "  ---  € " +
+                              posts[index].prezzo,
+                          textAlign: TextAlign.start),
+                      Divider(),
+                    ],
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          CircleAvatar(
+                            radius: 22,
+                            backgroundImage:
+                                NetworkImage(posts[index].photoProfileOwner),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(posts[index].nomeOwner,
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Image.network(posts[index].mediaUrl),
+                        ),
+                      ),
+                      Text(
+                          posts[index].descrizione +
+                              "  ---  € " +
+                              posts[index].prezzo,
+                          textAlign: TextAlign.start),
+                      Divider(),
+                    ],
+                  ),
+                );
+              }
+            },
+            itemCount: posts.length,
           ),
           onRefresh: _refresh,
         ),
@@ -453,10 +422,152 @@ class _FeedState extends State<Feed> {
             ),
             SliverSafeArea(
               sliver: SliverList(
-                delegate: SliverChildListDelegate(
-                  widget.isUtente
-                      ? buildListPostUtente(context)
-                      : buildListPostNegozio(context),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    if (widget.isUtente) {
+                      return Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                CircleAvatar(
+                                  radius: 22,
+                                  backgroundImage: NetworkImage(
+                                      posts[index].photoProfileOwner),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(posts[index].nomeOwner,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                ),
+                                Platform.isAndroid
+                                    ? IconButton(
+                                        icon: Icon(Icons.add),
+                                        onPressed: () async {
+                                          QuerySnapshot snapshot2 =
+                                              await _database
+                                                  .collection('utenti')
+                                                  .doc(utente.documentId)
+                                                  .collection('postSaved')
+                                                  .where('postSavedId',
+                                                      isEqualTo:
+                                                          posts[index].postId)
+                                                  .get();
+                                          if (snapshot2.docs.isNotEmpty) {
+                                            showDialogAlreadySaved();
+                                          } else {
+                                            await _database
+                                                .collection('posts')
+                                                .doc(posts[index].postId)
+                                                .update({
+                                              'numSalvati':
+                                                  posts[index].numSalvati + 1
+                                            });
+                                            await _database
+                                                .collection('utenti')
+                                                .doc(utente.documentId)
+                                                .collection('postSaved')
+                                                .add({
+                                              'postSavedId': posts[index].postId
+                                            });
+                                            showDialogPostSaved();
+                                          }
+                                        })
+                                    : CupertinoButton(
+                                        child: Icon(CupertinoIcons.add_circled),
+                                        onPressed: () async {
+                                          QuerySnapshot snapshot2 =
+                                              await _database
+                                                  .collection('utenti')
+                                                  .doc(utente.documentId)
+                                                  .collection('postSaved')
+                                                  .where('postSavedId',
+                                                      isEqualTo:
+                                                          posts[index].postId)
+                                                  .get();
+                                          if (snapshot2.docs.isNotEmpty) {
+                                            showDialogAlreadySaved();
+                                          } else {
+                                            await _database
+                                                .collection('posts')
+                                                .doc(posts[index].postId)
+                                                .update({
+                                              'numSalvati':
+                                                  posts[index].numSalvati + 1
+                                            });
+                                            await _database
+                                                .collection('utenti')
+                                                .doc(utente.documentId)
+                                                .collection('postSaved')
+                                                .add({
+                                              'postSavedId': posts[index].postId
+                                            });
+                                            showDialogPostSaved();
+                                          }
+                                        })
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Image.network(posts[index].mediaUrl),
+                              ),
+                            ),
+                            Text(
+                                posts[index].descrizione +
+                                    "  ---  € " +
+                                    posts[index].prezzo,
+                                textAlign: TextAlign.start),
+                            Divider(),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                CircleAvatar(
+                                  radius: 22,
+                                  backgroundImage: NetworkImage(
+                                      posts[index].photoProfileOwner),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(posts[index].nomeOwner,
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Image.network(posts[index].mediaUrl),
+                              ),
+                            ),
+                            Text(
+                                posts[index].descrizione +
+                                    "  ---  € " +
+                                    posts[index].prezzo,
+                                textAlign: TextAlign.start),
+                            Divider(),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                  childCount: posts.length,
                 ),
               ),
             ),
