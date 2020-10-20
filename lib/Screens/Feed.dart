@@ -265,15 +265,17 @@ class _FeedState extends State<Feed> {
                   radius: 22,
                   backgroundImage: NetworkImage(post.photoProfileOwner),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(post.nomeOwner,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(post.nomeOwner,
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                  ),
                 ),
                 Platform.isAndroid
                     ? IconButton(
-                        icon: Icon(Icons.save),
+                        icon: Icon(Icons.add),
                         onPressed: () async {
                           QuerySnapshot snapshot2 = await _database
                               .collection('utenti')
@@ -297,7 +299,7 @@ class _FeedState extends State<Feed> {
                           }
                         })
                     : CupertinoButton(
-                        child: Icon(CupertinoIcons.add),
+                        child: Icon(CupertinoIcons.add_circled),
                         onPressed: () async {
                           QuerySnapshot snapshot2 = await _database
                               .collection('utenti')
