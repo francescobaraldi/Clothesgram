@@ -28,6 +28,7 @@ class Ricerca extends StatefulWidget {
 
 class _RicercaState extends State<Ricerca> {
   List<Post> posts = [];
+  List<Post> listPostTemp = [];
   List<Negozio> negozi = [];
 
   Utente utente;
@@ -36,7 +37,10 @@ class _RicercaState extends State<Ricerca> {
   FirebaseAuth auth;
   FirebaseFirestore _database;
   FirebaseStorage storage;
-  QuerySnapshot snapshot;
+  QuerySnapshot snapshotNegozi;
+  QuerySnapshot snapshotPost;
+
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -143,6 +147,185 @@ class _RicercaState extends State<Ricerca> {
     );
   }
 
+  void getResult() async {
+    snapshotNegozi = await _database
+        .collection('negozi')
+        .where('nomeNegozio', isEqualTo: searchController.text)
+        .get();
+    snapshotPost = await _database.collection('posts').get();
+    listPostTemp.clear();
+    for (var i in snapshotPost.docs) {
+      listPostTemp.add(Post.fromDocument(i));
+    }
+    if (posts != null) posts.clear();
+    for (var i in listPostTemp) {
+      if (i.descrizione
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase()) &&
+          searchController.text.length != 0) {
+        posts.add(i);
+      }
+    }
+    setState(() {});
+  }
+
+  List<Widget> buildListPostSearch(BuildContext context) {
+    var postAppoggio;
+    if (posts.length == 0) {
+      return [];
+    }
+    List<Widget> listPost = [];
+    for (postAppoggio in posts) {
+      listPost.add(Padding(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          children: <Widget>[
+            Divider(),
+            Platform.isAndroid
+                ? FlatButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: Image.network(
+                            postAppoggio.mediaUrl,
+                            width: 76,
+                            height: 76,
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Text(postAppoggio.descrizione,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {},
+                  )
+                : CupertinoButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: Image.network(
+                            postAppoggio.mediaUrl,
+                            width: 76,
+                            height: 76,
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Text(postAppoggio.descrizione,
+                                style: TextStyle(
+                                    color: CupertinoColors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {},
+                  ),
+          ],
+        ),
+      ));
+    }
+    return listPost;
+  }
+
+  List<Widget> buildListNegoziSearch(BuildContext context) {
+    var negozioAppoggio;
+    List<Widget> listPost = [];
+    listPost = buildListPostSearch(context);
+    if ((snapshotNegozi == null || snapshotNegozi.docs.length == 0) &&
+        listPost.length == 0) {
+      return <Widget>[
+        Padding(
+          padding: EdgeInsets.all(8),
+          child: Text("La ricerca non ha prodotto risultati"),
+        ),
+      ];
+    }
+    if (negozi != null) negozi.clear();
+    for (var i in snapshotNegozi.docs) {
+      negozi.add(Negozio.fromDocument(i));
+    }
+    List<Widget> listNegozi = [];
+    for (negozioAppoggio in negozi) {
+      listNegozi.add(Padding(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          children: <Widget>[
+            Divider(),
+            Platform.isAndroid
+                ? FlatButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        CircleAvatar(
+                          radius: 22,
+                          backgroundImage:
+                              NetworkImage(negozioAppoggio.photoProfile),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                                negozioAppoggio.nomeNegozio +
+                                    ", " +
+                                    negozioAppoggio.citta,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {},
+                  )
+                : CupertinoButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        CircleAvatar(
+                          radius: 22,
+                          backgroundImage:
+                              NetworkImage(negozioAppoggio.photoProfile),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                                negozioAppoggio.nomeNegozio +
+                                    ", " +
+                                    negozioAppoggio.citta,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {},
+                  ),
+          ],
+        ),
+      ));
+    }
+    listNegozi.addAll(listPost);
+    return listNegozi;
+  }
+
   Widget build(BuildContext context) {
     if (widget.arg.runtimeType.toString() == "Utente") {
       utente = widget.arg;
@@ -168,7 +351,37 @@ class _RicercaState extends State<Ricerca> {
           ),
           automaticallyImplyLeading: false,
         ),
-        body: Center(child: Text("Child")),
+        body: Container(
+          child: ListView(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(6),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: searchController,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: getResult,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.clear),
+                      onPressed: () => searchController.text = "",
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: buildListNegoziSearch(context),
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
     if (Platform.isIOS) {
@@ -181,7 +394,37 @@ class _RicercaState extends State<Ricerca> {
             onPressed: () => builCupertinoDrawer(context),
           ),
         ),
-        child: Center(child: Text("Child")),
+        child: Container(
+          child: ListView(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(6),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: CupertinoTextField(
+                        controller: searchController,
+                      ),
+                    ),
+                    CupertinoButton(
+                      child: Icon(CupertinoIcons.search),
+                      onPressed: getResult,
+                    ),
+                    CupertinoButton(
+                      child: Icon(CupertinoIcons.clear_circled),
+                      onPressed: () => searchController.text = "",
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: buildListNegoziSearch(context),
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
   }
