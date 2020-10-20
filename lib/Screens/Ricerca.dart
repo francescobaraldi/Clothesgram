@@ -6,6 +6,7 @@ import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Models/Post.dart';
+import 'package:Applicazione/Screens/PostPage.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,6 +31,7 @@ class _RicercaState extends State<Ricerca> {
   List<Post> posts = [];
   List<Post> listPostTemp = [];
   List<Negozio> negozi = [];
+  int index;
 
   Utente utente;
   Negozio negozio;
@@ -175,6 +177,7 @@ class _RicercaState extends State<Ricerca> {
       return [];
     }
     List<Widget> listPost = [];
+    index = 0;
     for (postAppoggio in posts) {
       listPost.add(Padding(
         padding: EdgeInsets.all(8),
@@ -206,7 +209,13 @@ class _RicercaState extends State<Ricerca> {
                         ),
                       ],
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, PostPage.routeName,
+                          arguments: [
+                            widget.isUtente ? utente : negozio,
+                            postAppoggio
+                          ]);
+                    },
                   )
                 : CupertinoButton(
                     child: Row(
@@ -232,11 +241,18 @@ class _RicercaState extends State<Ricerca> {
                         ),
                       ],
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, PostPage.routeName,
+                          arguments: [
+                            widget.isUtente ? utente : negozio,
+                            postAppoggio
+                          ]);
+                    },
                   ),
           ],
         ),
       ));
+      index++;
     }
     return listPost;
   }

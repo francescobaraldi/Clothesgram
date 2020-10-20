@@ -28,6 +28,7 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> {
   List<Post> posts = [];
+  int index;
 
   Utente utente;
   Negozio negozio;
@@ -253,6 +254,7 @@ class _FeedState extends State<Feed> {
     }
 
     List<Widget> listPost = [];
+    index = 0;
     for (post in posts) {
       listPost.add(Padding(
         padding: EdgeInsets.all(8),
@@ -336,6 +338,7 @@ class _FeedState extends State<Feed> {
           ],
         ),
       ));
+      index++;
     }
     return listPost;
   }

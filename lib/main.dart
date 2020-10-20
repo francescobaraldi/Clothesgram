@@ -10,6 +10,7 @@ import 'package:Applicazione/Screens/HomePage.dart';
 import 'package:Applicazione/Screens/Registrazione.dart';
 import 'package:Applicazione/Screens/ConfermaRegistrazione.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
+import 'package:Applicazione/Screens/PostPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
           HomePage.routeName: (context) => HomePage(title: "Nome App"),
           Profilo.routeName: (context) => Profilo(title: "Profilo"),
           DatiLogin.routeName: (context) => DatiLogin(title: "Impostazioni"),
+          PostPage.routeName: (context) => PostPage(title: "Post"),
         },
       );
     }
@@ -60,6 +62,7 @@ class MyApp extends StatelessWidget {
           HomePage.routeName: (context) => HomePage(title: "Nome App"),
           Profilo.routeName: (context) => Profilo(title: "Profilo"),
           DatiLogin.routeName: (context) => DatiLogin(title: "Impostazioni"),
+          PostPage.routeName: (context) => PostPage(title: "Post"),
         },
       );
     }
