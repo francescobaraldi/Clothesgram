@@ -31,7 +31,6 @@ class _RicercaState extends State<Ricerca> {
   List<Post> posts = [];
   List<Post> listPostTemp = [];
   List<Negozio> negozi = [];
-  int index;
 
   Utente utente;
   Negozio negozio;
@@ -168,178 +167,164 @@ class _RicercaState extends State<Ricerca> {
         posts.add(i);
       }
     }
-    setState(() {});
-  }
-
-  List<Widget> buildListPostSearch(BuildContext context) {
-    var postAppoggio;
-    if (posts.length == 0) {
-      return [];
-    }
-    List<Widget> listPost = [];
-    index = 0;
-    for (postAppoggio in posts) {
-      listPost.add(Padding(
-        padding: EdgeInsets.all(8),
-        child: Column(
-          children: <Widget>[
-            Divider(),
-            Platform.isAndroid
-                ? FlatButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: Image.network(
-                            postAppoggio.mediaUrl,
-                            width: 76,
-                            height: 76,
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Text(postAppoggio.descrizione,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                      ],
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, PostPage.routeName,
-                          arguments: [
-                            widget.isUtente ? utente : negozio,
-                            postAppoggio
-                          ]);
-                    },
-                  )
-                : CupertinoButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: Image.network(
-                            postAppoggio.mediaUrl,
-                            width: 76,
-                            height: 76,
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Text(postAppoggio.descrizione,
-                                style: TextStyle(
-                                    color: CupertinoColors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                      ],
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, PostPage.routeName,
-                          arguments: [
-                            widget.isUtente ? utente : negozio,
-                            postAppoggio
-                          ]);
-                    },
-                  ),
-          ],
-        ),
-      ));
-      index++;
-    }
-    return listPost;
-  }
-
-  List<Widget> buildListNegoziSearch(BuildContext context) {
-    var negozioAppoggio;
-    List<Widget> listPost = [];
-    listPost = buildListPostSearch(context);
-    if ((snapshotNegozi == null || snapshotNegozi.docs.length == 0) &&
-        listPost.length == 0) {
-      return <Widget>[
-        Padding(
-          padding: EdgeInsets.all(8),
-          child: Text("La ricerca non ha prodotto risultati"),
-        ),
-      ];
-    }
     if (negozi != null) negozi.clear();
     for (var i in snapshotNegozi.docs) {
       negozi.add(Negozio.fromDocument(i));
     }
-    List<Widget> listNegozi = [];
-    for (negozioAppoggio in negozi) {
-      listNegozi.add(Padding(
-        padding: EdgeInsets.all(8),
-        child: Column(
-          children: <Widget>[
-            Divider(),
-            Platform.isAndroid
-                ? FlatButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        CircleAvatar(
-                          radius: 22,
-                          backgroundImage:
-                              NetworkImage(negozioAppoggio.photoProfile),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                                negozioAppoggio.nomeNegozio +
-                                    ", " +
-                                    negozioAppoggio.citta,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
+    setState(() {});
+  }
+
+  Widget buildExpanded(BuildContext context) {
+    return Expanded(
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          if (negozi.length == 0 && posts.length == 0) {
+            return Padding(
+              padding: EdgeInsets.all(8),
+              child: Text("La ricerca non ha prodotto risultati"),
+            );
+          }
+          if (index < negozi.length) {
+            return Padding(
+              padding: EdgeInsets.all(8),
+              child: Column(
+                children: <Widget>[
+                  Divider(),
+                  Platform.isAndroid
+                      ? FlatButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              CircleAvatar(
+                                radius: 22,
+                                backgroundImage:
+                                    NetworkImage(negozi[index].photoProfile),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                      negozi[index].nomeNegozio +
+                                          ", " +
+                                          negozi[index].citta,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    onPressed: () {},
-                  )
-                : CupertinoButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        CircleAvatar(
-                          radius: 22,
-                          backgroundImage:
-                              NetworkImage(negozioAppoggio.photoProfile),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                                negozioAppoggio.nomeNegozio +
-                                    ", " +
-                                    negozioAppoggio.citta,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
+                          onPressed: () {},
+                        )
+                      : CupertinoButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              CircleAvatar(
+                                radius: 22,
+                                backgroundImage:
+                                    NetworkImage(negozi[index].photoProfile),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                      negozi[index].nomeNegozio +
+                                          ", " +
+                                          negozi[index].citta,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                            ],
                           ),
+                          onPressed: () {},
                         ),
-                      ],
-                    ),
-                    onPressed: () {},
-                  ),
-          ],
-        ),
-      ));
-    }
-    listNegozi.addAll(listPost);
-    return listNegozi;
+                ],
+              ),
+            );
+          } else {
+            return Padding(
+              padding: EdgeInsets.all(8),
+              child: Column(
+                children: <Widget>[
+                  Divider(),
+                  Platform.isAndroid
+                      ? FlatButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: Image.network(
+                                  posts[index].mediaUrl,
+                                  width: 76,
+                                  height: 76,
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(posts[index].descrizione,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(context, PostPage.routeName,
+                                arguments: [
+                                  widget.isUtente ? utente : negozio,
+                                  posts[index]
+                                ]);
+                          },
+                        )
+                      : CupertinoButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: Image.network(
+                                  posts[index].mediaUrl,
+                                  width: 76,
+                                  height: 76,
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(posts[index].descrizione,
+                                      style: TextStyle(
+                                          color: CupertinoColors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(context, PostPage.routeName,
+                                arguments: [
+                                  widget.isUtente ? utente : negozio,
+                                  posts[index]
+                                ]);
+                          },
+                        ),
+                ],
+              ),
+            );
+          }
+        },
+        itemCount: negozi.length + posts.length,
+      ),
+    );
   }
 
   Widget build(BuildContext context) {
@@ -367,10 +352,10 @@ class _RicercaState extends State<Ricerca> {
           ),
           automaticallyImplyLeading: false,
         ),
-        body: Container(
-          child: ListView(
+        body: SafeArea(
+          child: Column(
             children: <Widget>[
-              Padding(
+              Container(
                 padding: EdgeInsets.all(6),
                 child: Row(
                   children: <Widget>[
@@ -390,11 +375,7 @@ class _RicercaState extends State<Ricerca> {
                   ],
                 ),
               ),
-              Container(
-                child: Column(
-                  children: buildListNegoziSearch(context),
-                ),
-              ),
+              buildExpanded(context),
             ],
           ),
         ),
@@ -410,10 +391,10 @@ class _RicercaState extends State<Ricerca> {
             onPressed: () => builCupertinoDrawer(context),
           ),
         ),
-        child: Container(
-          child: ListView(
+        child: SafeArea(
+          child: Column(
             children: <Widget>[
-              Padding(
+              Container(
                 padding: EdgeInsets.all(6),
                 child: Row(
                   children: <Widget>[
@@ -433,11 +414,7 @@ class _RicercaState extends State<Ricerca> {
                   ],
                 ),
               ),
-              Container(
-                child: Column(
-                  children: buildListNegoziSearch(context),
-                ),
-              ),
+              buildExpanded(context),
             ],
           ),
         ),
