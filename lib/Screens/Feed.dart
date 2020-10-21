@@ -1,17 +1,17 @@
-import 'package:Applicazione/Screens/DatiLogin.dart';
-import 'package:Applicazione/Screens/FirstPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Models/Post.dart';
+import 'package:Applicazione/Screens/DatiLogin.dart';
+import 'package:Applicazione/Screens/FirstPage.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 class Feed extends StatefulWidget {
   static const String routeName = "/HomePage/Feed";
@@ -20,7 +20,7 @@ class Feed extends StatefulWidget {
   final Object arg;
   final DocumentSnapshot documentSnapshot;
 
-  Feed({Key, key, this.title, this.isUtente, this.arg, this.documentSnapshot})
+  Feed({Key key, this.title, this.isUtente, this.arg, this.documentSnapshot})
       : super(key: key);
 
   _FeedState createState() => _FeedState();
@@ -269,81 +269,52 @@ class _FeedState extends State<Feed> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          CircleAvatar(
-                            radius: 22,
-                            backgroundImage:
-                                NetworkImage(posts[index].photoProfileOwner),
+                          FlatButton(
+                            padding: EdgeInsets.zero,
+                            child: CircleAvatar(
+                              radius: 22,
+                              backgroundImage:
+                                  NetworkImage(posts[index].photoProfileOwner),
+                            ),
+                            onPressed: () {},
                           ),
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(8),
                               child: Text(posts[index].nomeOwner,
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold)),
                             ),
                           ),
-                          Platform.isAndroid
-                              ? IconButton(
-                                  icon: Icon(Icons.add),
-                                  onPressed: () async {
-                                    QuerySnapshot snapshot2 = await _database
-                                        .collection('utenti')
-                                        .doc(utente.documentId)
-                                        .collection('postSaved')
-                                        .where('postSavedId',
-                                            isEqualTo: posts[index].postId)
-                                        .get();
-                                    if (snapshot2.docs.isNotEmpty) {
-                                      showDialogAlreadySaved();
-                                    } else {
-                                      await _database
-                                          .collection('posts')
-                                          .doc(posts[index].postId)
-                                          .update({
-                                        'numSalvati':
-                                            posts[index].numSalvati + 1
-                                      });
-                                      await _database
-                                          .collection('utenti')
-                                          .doc(utente.documentId)
-                                          .collection('postSaved')
-                                          .add({
-                                        'postSavedId': posts[index].postId
-                                      });
-                                      showDialogPostSaved();
-                                    }
-                                  })
-                              : CupertinoButton(
-                                  child: Icon(CupertinoIcons.add_circled),
-                                  onPressed: () async {
-                                    QuerySnapshot snapshot2 = await _database
-                                        .collection('utenti')
-                                        .doc(utente.documentId)
-                                        .collection('postSaved')
-                                        .where('postSavedId',
-                                            isEqualTo: posts[index].postId)
-                                        .get();
-                                    if (snapshot2.docs.isNotEmpty) {
-                                      showDialogAlreadySaved();
-                                    } else {
-                                      await _database
-                                          .collection('posts')
-                                          .doc(posts[index].postId)
-                                          .update({
-                                        'numSalvati':
-                                            posts[index].numSalvati + 1
-                                      });
-                                      await _database
-                                          .collection('utenti')
-                                          .doc(utente.documentId)
-                                          .collection('postSaved')
-                                          .add({
-                                        'postSavedId': posts[index].postId
-                                      });
-                                      showDialogPostSaved();
-                                    }
-                                  })
+                          IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () async {
+                                QuerySnapshot snapshot2 = await _database
+                                    .collection('utenti')
+                                    .doc(utente.documentId)
+                                    .collection('postSaved')
+                                    .where('postSavedId',
+                                        isEqualTo: posts[index].postId)
+                                    .get();
+                                if (snapshot2.docs.isNotEmpty) {
+                                  showDialogAlreadySaved();
+                                } else {
+                                  await _database
+                                      .collection('posts')
+                                      .doc(posts[index].postId)
+                                      .update({
+                                    'numSalvati': posts[index].numSalvati + 1
+                                  });
+                                  await _database
+                                      .collection('utenti')
+                                      .doc(utente.documentId)
+                                      .collection('postSaved')
+                                      .add(
+                                          {'postSavedId': posts[index].postId});
+                                  showDialogPostSaved();
+                                }
+                              }),
                         ],
                       ),
                       Padding(
@@ -369,10 +340,14 @@ class _FeedState extends State<Feed> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          CircleAvatar(
-                            radius: 22,
-                            backgroundImage:
-                                NetworkImage(posts[index].photoProfileOwner),
+                          FlatButton(
+                            padding: EdgeInsets.zero,
+                            child: CircleAvatar(
+                              radius: 22,
+                              backgroundImage:
+                                  NetworkImage(posts[index].photoProfileOwner),
+                            ),
+                            onPressed: () {},
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -432,10 +407,14 @@ class _FeedState extends State<Feed> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                CircleAvatar(
-                                  radius: 22,
-                                  backgroundImage: NetworkImage(
-                                      posts[index].photoProfileOwner),
+                                CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  child: CircleAvatar(
+                                    radius: 22,
+                                    backgroundImage: NetworkImage(
+                                        posts[index].photoProfileOwner),
+                                  ),
+                                  onPressed: () {},
                                 ),
                                 Expanded(
                                   child: Padding(
@@ -446,71 +425,36 @@ class _FeedState extends State<Feed> {
                                             fontWeight: FontWeight.bold)),
                                   ),
                                 ),
-                                Platform.isAndroid
-                                    ? IconButton(
-                                        icon: Icon(Icons.add),
-                                        onPressed: () async {
-                                          QuerySnapshot snapshot2 =
-                                              await _database
-                                                  .collection('utenti')
-                                                  .doc(utente.documentId)
-                                                  .collection('postSaved')
-                                                  .where('postSavedId',
-                                                      isEqualTo:
-                                                          posts[index].postId)
-                                                  .get();
-                                          if (snapshot2.docs.isNotEmpty) {
-                                            showDialogAlreadySaved();
-                                          } else {
-                                            await _database
-                                                .collection('posts')
-                                                .doc(posts[index].postId)
-                                                .update({
-                                              'numSalvati':
-                                                  posts[index].numSalvati + 1
-                                            });
-                                            await _database
-                                                .collection('utenti')
-                                                .doc(utente.documentId)
-                                                .collection('postSaved')
-                                                .add({
-                                              'postSavedId': posts[index].postId
-                                            });
-                                            showDialogPostSaved();
-                                          }
-                                        })
-                                    : CupertinoButton(
-                                        child: Icon(CupertinoIcons.add_circled),
-                                        onPressed: () async {
-                                          QuerySnapshot snapshot2 =
-                                              await _database
-                                                  .collection('utenti')
-                                                  .doc(utente.documentId)
-                                                  .collection('postSaved')
-                                                  .where('postSavedId',
-                                                      isEqualTo:
-                                                          posts[index].postId)
-                                                  .get();
-                                          if (snapshot2.docs.isNotEmpty) {
-                                            showDialogAlreadySaved();
-                                          } else {
-                                            await _database
-                                                .collection('posts')
-                                                .doc(posts[index].postId)
-                                                .update({
-                                              'numSalvati':
-                                                  posts[index].numSalvati + 1
-                                            });
-                                            await _database
-                                                .collection('utenti')
-                                                .doc(utente.documentId)
-                                                .collection('postSaved')
-                                                .add({
-                                              'postSavedId': posts[index].postId
-                                            });
-                                            showDialogPostSaved();
-                                          }
-                                        })
+                                CupertinoButton(
+                                    child: Icon(CupertinoIcons.add_circled),
+                                    onPressed: () async {
+                                      QuerySnapshot snapshot2 = await _database
+                                          .collection('utenti')
+                                          .doc(utente.documentId)
+                                          .collection('postSaved')
+                                          .where('postSavedId',
+                                              isEqualTo: posts[index].postId)
+                                          .get();
+                                      if (snapshot2.docs.isNotEmpty) {
+                                        showDialogAlreadySaved();
+                                      } else {
+                                        await _database
+                                            .collection('posts')
+                                            .doc(posts[index].postId)
+                                            .update({
+                                          'numSalvati':
+                                              posts[index].numSalvati + 1
+                                        });
+                                        await _database
+                                            .collection('utenti')
+                                            .doc(utente.documentId)
+                                            .collection('postSaved')
+                                            .add({
+                                          'postSavedId': posts[index].postId
+                                        });
+                                        showDialogPostSaved();
+                                      }
+                                    })
                               ],
                             ),
                             Padding(
@@ -536,10 +480,14 @@ class _FeedState extends State<Feed> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                CircleAvatar(
-                                  radius: 22,
-                                  backgroundImage: NetworkImage(
-                                      posts[index].photoProfileOwner),
+                                CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  child: CircleAvatar(
+                                    radius: 22,
+                                    backgroundImage: NetworkImage(
+                                        posts[index].photoProfileOwner),
+                                  ),
+                                  onPressed: () {},
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),

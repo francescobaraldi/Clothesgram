@@ -1,11 +1,11 @@
-import 'package:Applicazione/Screens/DatiLogin.dart';
-import 'package:Applicazione/Screens/FirstPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Models/Post.dart';
+import 'package:Applicazione/Screens/DatiLogin.dart';
+import 'package:Applicazione/Screens/FirstPage.dart';
 import 'package:Applicazione/Screens/PostPage.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -310,11 +310,15 @@ class _RicercaState extends State<Ricerca> {
                             ],
                           ),
                           onPressed: () {
-                            Navigator.pushNamed(context, PostPage.routeName,
-                                arguments: [
-                                  widget.isUtente ? utente : negozio,
-                                  posts[index]
-                                ]);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PostPage(title: "Post"),
+                                  settings: RouteSettings(arguments: [
+                                    widget.isUtente ? utente : negozio,
+                                    posts[index]
+                                  ]),
+                                ));
                           },
                         ),
                 ],
