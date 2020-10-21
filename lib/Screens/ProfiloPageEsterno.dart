@@ -15,21 +15,27 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class ProfiloPage extends StatefulWidget {
+class ProfiloPageEsterno extends StatefulWidget {
   static const String routeName = "/HomePage/ProfiloPage";
   final String title;
   final bool isUtente;
   final Object arg;
   final DocumentSnapshot documentSnapshot;
+  final Negozio negozioOwner;
 
-  ProfiloPage(
-      {Key key, this.title, this.isUtente, this.arg, this.documentSnapshot})
+  ProfiloPageEsterno(
+      {Key key,
+      this.title,
+      this.isUtente,
+      this.arg,
+      this.documentSnapshot,
+      this.negozioOwner})
       : super(key: key);
 
-  _ProfiloPageState createState() => _ProfiloPageState();
+  _ProfiloPageEsternoState createState() => _ProfiloPageEsternoState();
 }
 
-class _ProfiloPageState extends State<ProfiloPage> {
+class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
   Utente utente;
   Negozio negozio;
 
@@ -54,167 +60,18 @@ class _ProfiloPageState extends State<ProfiloPage> {
     getImages();
   }
 
-  Widget buildDrawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8),
-                  child: CircleAvatar(
-                    radius: 32,
-                    backgroundImage: NetworkImage(widget.isUtente
-                        ? utente.photoProfile
-                        : negozio.photoProfile),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    widget.isUtente
-                        ? utente.nome + " " + utente.cognome
-                        : negozio.nomeNegozio,
-                    style: TextStyle(
-                      fontSize: 26,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.account_circle),
-            title: Text("I miei dati"),
-            onTap: () => Navigator.pushNamed(context, Profilo.routeName,
-                arguments: widget.documentSnapshot),
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text("Impostazioni"),
-            onTap: () => Navigator.pushNamed(context, DatiLogin.routeName,
-                arguments: widget.isUtente),
-          ),
-          ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text("Esci dall'account"),
-            onTap: () async {
-              await GoogleSignIn().signOut;
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushNamed(context, FirstPage.routeName);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  void builCupertinoDrawer(BuildContext context) async {
-    await showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) {
-        return CupertinoActionSheet(
-          title: Text(widget.isUtente
-              ? utente.nome + " " + utente.cognome
-              : negozio.nomeNegozio),
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-              child: Text("I miei dati"),
-              onPressed: () {
-                Navigator.pushNamed(context, Profilo.routeName,
-                    arguments: widget.documentSnapshot);
-              },
-            ),
-            CupertinoActionSheetAction(
-              child: Text("Impostazioni"),
-              onPressed: () => Navigator.pushNamed(context, DatiLogin.routeName,
-                  arguments: widget.isUtente),
-            ),
-            CupertinoActionSheetAction(
-              child: Text("Esci dall'account",
-                  style: TextStyle(color: CupertinoColors.destructiveRed)),
-              onPressed: () async {
-                await GoogleSignIn().signOut;
-                await FirebaseAuth.instance.signOut();
-                Navigator.pushNamed(context, FirstPage.routeName);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void selectImage() async {
-    ImagePicker imagePicker = ImagePicker();
-    var pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
-    setState(() {
-      file = File(pickedFile.path);
-      image = FileImage(file);
-    });
-    StorageTaskSnapshot storageTaskSnapshot;
-    try {
-      storageTaskSnapshot = await storage
-          .ref()
-          .child('fotoProfilo/' + file.path.split('/').last)
-          .putFile(file)
-          .onComplete;
-    } on FirebaseException catch (e) {
-      print("Error");
-    }
-    if (widget.isUtente) {
-      await _database.collection('utenti').doc(utente.documentId).update({
-        'photoProfile': await storageTaskSnapshot.ref.getDownloadURL(),
-      });
-    } else {
-      await _database.collection('negozi').doc(negozio.documentId).update({
-        'photoProfile': await storageTaskSnapshot.ref.getDownloadURL(),
-      });
-    }
-  }
-
   void getImages() async {
-    if (widget.isUtente) {
-      snapshot = await _database
-          .collection('utenti')
-          .doc(auth.currentUser.uid)
-          .collection('postSaved')
-          .get();
-      snapshotPost = await _database.collection('posts').get();
-      listOfImage.clear();
-      for (var i in snapshot.docs) {
-        listOfImage.add(NetworkImage(i.get('postSavedUrl')));
-      }
-      bool trovato = false;
-      listOfPosts.clear();
-      for (var i in snapshotPost.docs) {
-        listOfPosts.add(Post.fromDocument(i));
-      }
-      for (var i in listOfPosts) {
-        for (var j in snapshot.docs) {
-          if (i.postId == j.get('postSavedId')) trovato = true;
-        }
-        if (trovato == false) listOfPosts.remove(i);
-      }
-    } else {
-      snapshot = await _database.collection('posts').get();
-      listOfPosts.clear();
-      for (var i in snapshot.docs) {
-        listOfPosts.add(Post.fromDocument(i));
-      }
-      for (var i in listOfPosts) {
-        if (i.ownerId != auth.currentUser.uid) listOfPosts.remove(i);
-      }
-      listOfImage.clear();
-      for (var i in listOfPosts) {
-        listOfImage.add(NetworkImage(i.mediaUrl));
-      }
+    snapshot = await _database.collection('posts').get();
+    listOfPosts.clear();
+    for (var i in snapshot.docs) {
+      listOfPosts.add(Post.fromDocument(i));
+    }
+    for (var i in listOfPosts) {
+      if (i.ownerId != auth.currentUser.uid) listOfPosts.remove(i);
+    }
+    listOfImage.clear();
+    for (var i in listOfPosts) {
+      listOfImage.add(NetworkImage(i.mediaUrl));
     }
     setState(() {});
   }
@@ -228,23 +85,8 @@ class _ProfiloPageState extends State<ProfiloPage> {
 
     if (Platform.isAndroid) {
       return Scaffold(
-        drawer: buildDrawer(),
         appBar: AppBar(
-          title: Text(widget.isUtente
-              ? utente.nome + " " + utente.cognome
-              : negozio.nomeNegozio),
-          leading: Builder(
-            builder: (BuildContext context) {
-              return IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-              );
-            },
-          ),
-          automaticallyImplyLeading: false,
+          title: Text(widget.negozioOwner.nomeNegozio),
         ),
         body: widget.isUtente
             ? SafeArea(
@@ -262,17 +104,6 @@ class _ProfiloPageState extends State<ProfiloPage> {
                                   : image,
                               radius: 80,
                               backgroundColor: Colors.grey,
-                            ),
-                            FlatButton(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Modifica"),
-                                    Icon(
-                                      Icons.camera,
-                                    )
-                                  ]),
-                              onPressed: () => selectImage(),
                             ),
                           ]),
                         ),
@@ -331,17 +162,6 @@ class _ProfiloPageState extends State<ProfiloPage> {
                               radius: 80,
                               backgroundColor: Colors.grey,
                             ),
-                            FlatButton(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Modifica"),
-                                    Icon(
-                                      Icons.camera,
-                                    )
-                                  ]),
-                              onPressed: () => selectImage(),
-                            ),
                           ]),
                         ),
                         Container(
@@ -388,14 +208,7 @@ class _ProfiloPageState extends State<ProfiloPage> {
     if (Platform.isIOS) {
       return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text(widget.isUtente
-              ? utente.nome + " " + utente.cognome
-              : negozio.nomeNegozio),
-          trailing: CupertinoButton(
-            padding: EdgeInsets.only(bottom: 5),
-            child: Icon(CupertinoIcons.settings),
-            onPressed: () => builCupertinoDrawer(context),
-          ),
+          middle: Text(widget.negozioOwner.nomeNegozio),
         ),
         child: widget.isUtente
             ? SafeArea(
@@ -408,22 +221,10 @@ class _ProfiloPageState extends State<ProfiloPage> {
                           margin: EdgeInsets.only(top: 10),
                           child: Column(children: <Widget>[
                             CircleAvatar(
-                              backgroundImage: image == null
-                                  ? NetworkImage(utente.photoProfile)
-                                  : image,
+                              backgroundImage: NetworkImage(
+                                  widget.negozioOwner.photoProfile),
                               radius: 80,
                               backgroundColor: Colors.grey,
-                            ),
-                            CupertinoButton(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Modifica"),
-                                    Icon(
-                                      CupertinoIcons.camera_rotate,
-                                    )
-                                  ]),
-                              onPressed: () => selectImage(),
                             ),
                           ]),
                         ),
@@ -476,22 +277,10 @@ class _ProfiloPageState extends State<ProfiloPage> {
                           margin: EdgeInsets.only(top: 10),
                           child: Column(children: <Widget>[
                             CircleAvatar(
-                              backgroundImage: image == null
-                                  ? NetworkImage(negozio.photoProfile)
-                                  : image,
+                              backgroundImage: NetworkImage(
+                                  widget.negozioOwner.photoProfile),
                               radius: 80,
                               backgroundColor: Colors.grey,
-                            ),
-                            CupertinoButton(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Modifica"),
-                                    Icon(
-                                      CupertinoIcons.camera_rotate,
-                                    )
-                                  ]),
-                              onPressed: () => selectImage(),
                             ),
                           ]),
                         ),
