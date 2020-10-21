@@ -127,10 +127,23 @@ class _PostPageState extends State<PostPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              CircleAvatar(
-                radius: 22,
-                backgroundImage: NetworkImage(post.photoProfileOwner),
-              ),
+              Platform.isAndroid
+                  ? FlatButton(
+                      padding: EdgeInsets.zero,
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundImage: NetworkImage(post.photoProfileOwner),
+                      ),
+                      onPressed: () {},
+                    )
+                  : CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundImage: NetworkImage(post.photoProfileOwner),
+                      ),
+                      onPressed: () {},
+                    ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -211,10 +224,23 @@ class _PostPageState extends State<PostPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              CircleAvatar(
-                radius: 22,
-                backgroundImage: NetworkImage(post.photoProfileOwner),
-              ),
+              Platform.isAndroid
+                  ? FlatButton(
+                      padding: EdgeInsets.zero,
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundImage: NetworkImage(post.photoProfileOwner),
+                      ),
+                      onPressed: () {},
+                    )
+                  : CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundImage: NetworkImage(post.photoProfileOwner),
+                      ),
+                      onPressed: () {},
+                    ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

@@ -1,15 +1,15 @@
-import 'package:Applicazione/Screens/CreatePost.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
+import 'package:Applicazione/Screens/Feed.dart';
+import 'package:Applicazione/Screens/Ricerca.dart';
+import 'package:Applicazione/Screens/CreatePost.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:Applicazione/Screens/Feed.dart';
-import 'package:Applicazione/Screens/Ricerca.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = "/HomePage";
@@ -123,17 +123,19 @@ class _HomePageState extends State<HomePage> {
     return <BottomNavigationBarItem>[
       BottomNavigationBarItem(
         backgroundColor: Colors.blue,
-        icon: Icon(Icons.home),
+        icon: Icon(Platform.isAndroid ? Icons.home : CupertinoIcons.home),
         label: "Home",
       ),
       BottomNavigationBarItem(
         backgroundColor: Colors.blue,
-        icon: Icon(Icons.search),
+        icon: Icon(Platform.isAndroid ? Icons.search : CupertinoIcons.search),
         label: "Cerca",
       ),
       BottomNavigationBarItem(
         backgroundColor: Colors.blue,
-        icon: Icon(Icons.account_circle),
+        icon: Icon(Platform.isAndroid
+            ? Icons.account_circle
+            : CupertinoIcons.profile_circled),
         label: "Profilo",
       ),
     ];
@@ -143,22 +145,24 @@ class _HomePageState extends State<HomePage> {
     return <BottomNavigationBarItem>[
       BottomNavigationBarItem(
         backgroundColor: Colors.blue,
-        icon: Icon(Icons.home),
+        icon: Icon(Platform.isAndroid ? Icons.home : CupertinoIcons.home),
         label: "Home",
       ),
       BottomNavigationBarItem(
         backgroundColor: Colors.blue,
-        icon: Icon(Icons.add),
+        icon: Icon(Platform.isAndroid ? Icons.add : CupertinoIcons.add),
         label: "Aggiungi",
       ),
       BottomNavigationBarItem(
         backgroundColor: Colors.blue,
-        icon: Icon(Icons.search),
+        icon: Icon(Platform.isAndroid ? Icons.search : CupertinoIcons.search),
         label: "Cerca",
       ),
       BottomNavigationBarItem(
         backgroundColor: Colors.blue,
-        icon: Icon(Icons.account_circle),
+        icon: Icon(Platform.isAndroid
+            ? Icons.account_circle
+            : CupertinoIcons.profile_circled),
         label: "Profilo",
       ),
     ];
