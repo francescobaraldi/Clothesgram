@@ -7,12 +7,15 @@ import 'package:Applicazione/Models/Post.dart';
 import 'package:Applicazione/Screens/DatiLogin.dart';
 import 'package:Applicazione/Screens/FirstPage.dart';
 import 'package:Applicazione/Screens/PostPage.dart';
+import 'package:Applicazione/Screens/ProfiloPage.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+
+import 'ProfiloPageEsterno.dart';
 
 class Ricerca extends StatefulWidget {
   static const String routeName = "/HomePage/Ricerca";
@@ -215,7 +218,18 @@ class _RicercaState extends State<Ricerca> {
                               ),
                             ],
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return ProfiloPageEsterno(
+                                title: widget.title,
+                                isUtente: widget.isUtente,
+                                arg: widget.isUtente ? utente : negozio,
+                                documentSnapshot: widget.documentSnapshot,
+                                negozioOwner: negozi[index],
+                              );
+                            }));
+                          },
                         )
                       : CupertinoButton(
                           child: Row(
@@ -241,7 +255,18 @@ class _RicercaState extends State<Ricerca> {
                               ),
                             ],
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return ProfiloPageEsterno(
+                                title: widget.title,
+                                isUtente: widget.isUtente,
+                                arg: widget.isUtente ? utente : negozio,
+                                documentSnapshot: widget.documentSnapshot,
+                                negozioOwner: negozi[index],
+                              );
+                            }));
+                          },
                         ),
                 ],
               ),
@@ -281,7 +306,8 @@ class _RicercaState extends State<Ricerca> {
                             Navigator.pushNamed(context, PostPage.routeName,
                                 arguments: [
                                   widget.isUtente ? utente : negozio,
-                                  posts[index]
+                                  posts[index],
+                                  widget.documentSnapshot,
                                 ]);
                           },
                         )
@@ -316,7 +342,8 @@ class _RicercaState extends State<Ricerca> {
                                   builder: (context) => PostPage(title: "Post"),
                                   settings: RouteSettings(arguments: [
                                     widget.isUtente ? utente : negozio,
-                                    posts[index]
+                                    posts[index],
+                                    widget.documentSnapshot
                                   ]),
                                 ));
                           },

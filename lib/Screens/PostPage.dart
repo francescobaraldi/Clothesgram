@@ -9,11 +9,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import 'ProfiloPageEsterno.dart';
+
 class PostPage extends StatefulWidget {
   static const String routeName = "/HomePage/PostPage";
   final String title;
 
-  PostPage({Key key, this.title}) : super(key: key);
+  PostPage({
+    Key key,
+    this.title,
+  }) : super(key: key);
 
   _PostPageState createState() => _PostPageState();
 }
@@ -28,6 +33,9 @@ class _PostPageState extends State<PostPage> {
   Utente utente;
   bool isUtente;
   Post post;
+  Negozio negozioOwner;
+  QuerySnapshot snapshot;
+  DocumentSnapshot documentSnapshot;
 
   @override
   void initState() {
@@ -119,6 +127,23 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
+  void getNegozio() async {
+    snapshot = await _database
+        .collection('negozi')
+        .where('nomeNegozio', isEqualTo: post.nomeOwner)
+        .get();
+    negozioOwner = Negozio.fromDocument(snapshot.docs.first);
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ProfiloPageEsterno(
+        title: widget.title,
+        isUtente: isUtente,
+        arg: isUtente ? utente : negozio,
+        documentSnapshot: documentSnapshot,
+        negozioOwner: negozioOwner,
+      );
+    }));
+  }
+
   Widget buildBodyUtente(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(8),
@@ -134,7 +159,7 @@ class _PostPageState extends State<PostPage> {
                         radius: 22,
                         backgroundImage: NetworkImage(post.photoProfileOwner),
                       ),
-                      onPressed: () {},
+                      onPressed: getNegozio,
                     )
                   : CupertinoButton(
                       padding: EdgeInsets.zero,
@@ -142,7 +167,7 @@ class _PostPageState extends State<PostPage> {
                         radius: 22,
                         backgroundImage: NetworkImage(post.photoProfileOwner),
                       ),
-                      onPressed: () {},
+                      onPressed: getNegozio,
                     ),
               Expanded(
                 child: Padding(
@@ -237,7 +262,7 @@ class _PostPageState extends State<PostPage> {
                         radius: 22,
                         backgroundImage: NetworkImage(post.photoProfileOwner),
                       ),
-                      onPressed: () {},
+                      onPressed: getNegozio,
                     )
                   : CupertinoButton(
                       padding: EdgeInsets.zero,
@@ -245,7 +270,7 @@ class _PostPageState extends State<PostPage> {
                         radius: 22,
                         backgroundImage: NetworkImage(post.photoProfileOwner),
                       ),
-                      onPressed: () {},
+                      onPressed: getNegozio,
                     ),
               Expanded(
                 child: Padding(
@@ -273,6 +298,7 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     arg = ModalRoute.of(context).settings.arguments;
     post = arg[1];
+    documentSnapshot = arg[2];
     if (arg.first.runtimeType.toString() == "Utente") {
       utente = arg.first;
       isUtente = true;

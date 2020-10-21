@@ -1,3 +1,4 @@
+import 'package:Applicazione/Screens/ProfiloPageEsterno.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
@@ -28,6 +29,7 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> {
   List<Post> posts = [];
+  List<Negozio> listOfNegozi = [];
 
   Utente utente;
   Negozio negozio;
@@ -36,6 +38,7 @@ class _FeedState extends State<Feed> {
   FirebaseFirestore _database;
   FirebaseStorage storage;
   QuerySnapshot snapshot;
+  QuerySnapshot snapshotNegozi;
 
   @override
   void initState() {
@@ -230,6 +233,11 @@ class _FeedState extends State<Feed> {
     if (posts != null) posts.clear();
     for (var i in snapshot.docs) {
       posts.add(Post.fromDocument(i));
+      snapshotNegozi = await _database
+          .collection('negozi')
+          .where('nomeNegozio', isEqualTo: i.get('nomeOwner'))
+          .get();
+      listOfNegozi.add(Negozio.fromDocument(snapshotNegozi.docs.first));
     }
     setState(() {});
   }
@@ -276,7 +284,18 @@ class _FeedState extends State<Feed> {
                               backgroundImage:
                                   NetworkImage(posts[index].photoProfileOwner),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return ProfiloPageEsterno(
+                                  title: widget.title,
+                                  isUtente: widget.isUtente,
+                                  arg: widget.isUtente ? utente : negozio,
+                                  documentSnapshot: widget.documentSnapshot,
+                                  negozioOwner: listOfNegozi[index],
+                                );
+                              }));
+                            },
                           ),
                           Expanded(
                             child: Padding(
@@ -349,7 +368,18 @@ class _FeedState extends State<Feed> {
                               backgroundImage:
                                   NetworkImage(posts[index].photoProfileOwner),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return ProfiloPageEsterno(
+                                  title: widget.title,
+                                  isUtente: widget.isUtente,
+                                  arg: widget.isUtente ? utente : negozio,
+                                  documentSnapshot: widget.documentSnapshot,
+                                  negozioOwner: listOfNegozi[index],
+                                );
+                              }));
+                            },
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -416,7 +446,19 @@ class _FeedState extends State<Feed> {
                                     backgroundImage: NetworkImage(
                                         posts[index].photoProfileOwner),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return ProfiloPageEsterno(
+                                        title: widget.title,
+                                        isUtente: widget.isUtente,
+                                        arg: widget.isUtente ? utente : negozio,
+                                        documentSnapshot:
+                                            widget.documentSnapshot,
+                                        negozioOwner: listOfNegozi[index],
+                                      );
+                                    }));
+                                  },
                                 ),
                                 Expanded(
                                   child: Padding(
@@ -490,7 +532,19 @@ class _FeedState extends State<Feed> {
                                     backgroundImage: NetworkImage(
                                         posts[index].photoProfileOwner),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return ProfiloPageEsterno(
+                                        title: widget.title,
+                                        isUtente: widget.isUtente,
+                                        arg: widget.isUtente ? utente : negozio,
+                                        documentSnapshot:
+                                            widget.documentSnapshot,
+                                        negozioOwner: listOfNegozi[index],
+                                      );
+                                    }));
+                                  },
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
