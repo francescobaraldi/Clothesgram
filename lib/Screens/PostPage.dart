@@ -173,7 +173,10 @@ class _PostPageState extends State<PostPage> {
                               .collection('utenti')
                               .doc(utente.documentId)
                               .collection('postSaved')
-                              .add({'postSavedId': post.postId});
+                              .add({
+                            'postSavedId': post.postId,
+                            'postSavedUrl': post.mediaUrl
+                          });
                           showDialogPostSaved();
                         }
                       })
@@ -197,7 +200,10 @@ class _PostPageState extends State<PostPage> {
                               .collection('utenti')
                               .doc(utente.documentId)
                               .collection('postSaved')
-                              .add({'postSavedId': post.postId});
+                              .add({
+                            'postSavedId': post.postId,
+                            'postSavedUrl': post.mediaUrl
+                          });
                           showDialogPostSaved();
                         }
                       })

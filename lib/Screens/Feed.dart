@@ -310,8 +310,10 @@ class _FeedState extends State<Feed> {
                                       .collection('utenti')
                                       .doc(utente.documentId)
                                       .collection('postSaved')
-                                      .add(
-                                          {'postSavedId': posts[index].postId});
+                                      .add({
+                                    'postSavedId': posts[index].postId,
+                                    'postSavedUrl': posts[index].mediaUrl
+                                  });
                                   showDialogPostSaved();
                                 }
                               }),
@@ -450,7 +452,8 @@ class _FeedState extends State<Feed> {
                                             .doc(utente.documentId)
                                             .collection('postSaved')
                                             .add({
-                                          'postSavedId': posts[index].postId
+                                          'postSavedId': posts[index].postId,
+                                          'postSavedUrl': posts[index].mediaUrl
                                         });
                                         showDialogPostSaved();
                                       }

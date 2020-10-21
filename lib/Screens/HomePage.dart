@@ -6,6 +6,7 @@ import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Screens/Feed.dart';
 import 'package:Applicazione/Screens/Ricerca.dart';
 import 'package:Applicazione/Screens/CreatePost.dart';
+import 'package:Applicazione/Screens/ProfiloPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
@@ -82,7 +83,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       Container(
-        child: Text("Profilo"),
+        child: ProfiloPage(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
       ),
     ];
   }
@@ -114,7 +120,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       Container(
-        child: Text("Profilo"),
+        child: ProfiloPage(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
       ),
     ];
   }
@@ -205,7 +216,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       Container(
-        child: Text("Profilo"),
+        child: ProfiloPage(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
       ),
     ];
 
@@ -235,7 +251,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       Container(
-        child: Text("Profilo"),
+        child: ProfiloPage(
+          title: widget.title,
+          isUtente: isUtente,
+          arg: isUtente ? utente : negozio,
+          documentSnapshot: documentSnapshot,
+        ),
       ),
     ];
 
