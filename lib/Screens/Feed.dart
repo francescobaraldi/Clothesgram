@@ -414,16 +414,19 @@ class _FeedState extends State<Feed> {
     }
     if (Platform.isIOS) {
       return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text(widget.title),
-          trailing: CupertinoButton(
-            padding: EdgeInsets.only(bottom: 5),
-            child: Icon(CupertinoIcons.settings),
-            onPressed: () => builCupertinoDrawer(context),
-          ),
-        ),
+        // navigationBar: CupertinoNavigationBar(
+        //   middle: Text(widget.title),
+        //   trailing: CupertinoButton(
+        //     padding: EdgeInsets.only(bottom: 5),
+        //     child: Icon(CupertinoIcons.settings),
+        //     onPressed: () => builCupertinoDrawer(context),
+        //   ),
+        // ),
         child: CustomScrollView(
           slivers: <Widget>[
+            const CupertinoSliverNavigationBar(
+              largeTitle: Text("Nome App"),
+            ),
             CupertinoSliverRefreshControl(
               onRefresh: _refresh,
             ),
