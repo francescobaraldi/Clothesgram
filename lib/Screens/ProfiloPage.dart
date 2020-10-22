@@ -269,14 +269,16 @@ class _ProfiloPageState extends State<ProfiloPage> {
                                   children: <Widget>[
                                     Text("Modifica"),
                                     Icon(
-                                      Icons.camera,
+                                      Icons.camera_alt,
                                     )
                                   ]),
                               onPressed: () => selectImage(),
                             ),
                           ]),
                         ),
+                        Divider(),
                         Container(
+                          padding: EdgeInsets.only(top: 16),
                           height: 600,
                           child: GridView.count(
                             scrollDirection: Axis.vertical,
@@ -337,14 +339,16 @@ class _ProfiloPageState extends State<ProfiloPage> {
                                   children: <Widget>[
                                     Text("Modifica"),
                                     Icon(
-                                      Icons.camera,
+                                      Icons.camera_alt,
                                     )
                                   ]),
                               onPressed: () => selectImage(),
                             ),
                           ]),
                         ),
+                        Divider(),
                         Container(
+                          padding: EdgeInsets.only(top: 16),
                           height: 600,
                           child: GridView.count(
                             scrollDirection: Axis.vertical,
@@ -427,7 +431,9 @@ class _ProfiloPageState extends State<ProfiloPage> {
                             ),
                           ]),
                         ),
+                        Divider(),
                         Container(
+                          padding: EdgeInsets.only(top: 16),
                           height: 600,
                           child: GridView.count(
                             scrollDirection: Axis.vertical,
@@ -495,7 +501,9 @@ class _ProfiloPageState extends State<ProfiloPage> {
                             ),
                           ]),
                         ),
+                        Divider(),
                         Container(
+                          padding: EdgeInsets.only(top: 16),
                           height: 600,
                           child: GridView.count(
                             scrollDirection: Axis.vertical,

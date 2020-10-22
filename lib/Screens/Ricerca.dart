@@ -183,8 +183,9 @@ class _RicercaState extends State<Ricerca> {
         itemBuilder: (context, index) {
           if (negozi.length == 0 && posts.length == 0) {
             return Padding(
-              padding: EdgeInsets.all(8),
-              child: Text("La ricerca non ha prodotto risultati"),
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                  child: Text("La ricerca non ha prodotto risultati")),
             );
           }
           if (index < negozi.length) {

@@ -5,14 +5,9 @@ import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Models/Post.dart';
-import 'package:Applicazione/Screens/DatiLogin.dart';
-import 'package:Applicazione/Screens/FirstPage.dart';
-import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class ProfiloPageEsterno extends StatefulWidget {
@@ -67,7 +62,7 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
       listOfPosts.add(Post.fromDocument(i));
     }
     for (var i in listOfPosts) {
-      if (i.ownerId != auth.currentUser.uid) listOfPosts.remove(i);
+      if (i.ownerId != widget.negozioOwner.documentId) listOfPosts.remove(i);
     }
     listOfImage.clear();
     for (var i in listOfPosts) {
@@ -88,121 +83,92 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
         appBar: AppBar(
           title: Text(widget.negozioOwner.nomeNegozio),
         ),
-        body: widget.isUtente
-            ? SafeArea(
-                child: SingleChildScrollView(
-                  child: Container(
-                    child: Column(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    color: Colors.white,
+                    margin: EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Container(
-                          color: Colors.white,
-                          margin: EdgeInsets.only(top: 10),
-                          child: Column(children: <Widget>[
-                            CircleAvatar(
-                              backgroundImage: image == null
-                                  ? NetworkImage(utente.photoProfile)
-                                  : image,
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                            ),
-                          ]),
-                        ),
-                        Container(
-                          height: 600,
-                          child: GridView.count(
-                            scrollDirection: Axis.vertical,
-                            crossAxisCount: 3,
-                            children:
-                                List.generate(listOfImage.length, (index) {
-                              return FlatButton(
-                                padding: EdgeInsets.zero,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: listOfImage[index],
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return PostPage(title: "Post");
-                                        },
-                                        settings: RouteSettings(arguments: [
-                                          widget.isUtente ? utente : negozio,
-                                          listOfPosts[index],
-                                          widget.documentSnapshot
-                                        ]),
-                                      ));
-                                },
-                              );
-                            }),
+                        Column(children: <Widget>[
+                          CircleAvatar(
+                            backgroundImage: image == null
+                                ? NetworkImage(widget.negozioOwner.photoProfile)
+                                : image,
+                            radius: 80,
+                            backgroundColor: Colors.grey,
                           ),
-                        )
+                        ]),
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  widget.negozioOwner.citta,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                )),
+                            Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  widget.negozioOwner.via +
+                                      ", " +
+                                      widget.negozioOwner.numeroCivico
+                                          .toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                )),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                ),
-              )
-            : SafeArea(
-                child: SingleChildScrollView(
-                  child: Container(
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          color: Colors.white,
-                          margin: EdgeInsets.only(top: 10),
-                          child: Column(children: <Widget>[
-                            CircleAvatar(
-                              backgroundImage: image == null
-                                  ? NetworkImage(negozio.photoProfile)
-                                  : image,
-                              radius: 80,
-                              backgroundColor: Colors.grey,
+                  Divider(),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    height: 600,
+                    child: GridView.count(
+                      scrollDirection: Axis.vertical,
+                      crossAxisCount: 3,
+                      children: List.generate(listOfImage.length, (index) {
+                        return FlatButton(
+                          padding: EdgeInsets.zero,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: listOfImage[index],
+                              ),
                             ),
-                          ]),
-                        ),
-                        Container(
-                          height: 600,
-                          child: GridView.count(
-                            scrollDirection: Axis.vertical,
-                            crossAxisCount: 3,
-                            children:
-                                List.generate(listOfImage.length, (index) {
-                              return FlatButton(
-                                padding: EdgeInsets.zero,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: listOfImage[index],
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return PostPage(title: "Post");
-                                        },
-                                        settings: RouteSettings(arguments: [
-                                          widget.isUtente ? utente : negozio,
-                                          listOfPosts[index],
-                                          widget.documentSnapshot
-                                        ]),
-                                      ));
-                                },
-                              );
-                            }),
                           ),
-                        )
-                      ],
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return PostPage(title: "Post");
+                                  },
+                                  settings: RouteSettings(arguments: [
+                                    widget.isUtente ? utente : negozio,
+                                    listOfPosts[index],
+                                    widget.documentSnapshot
+                                  ]),
+                                ));
+                          },
+                        );
+                      }),
                     ),
-                  ),
-                ),
+                  )
+                ],
               ),
+            ),
+          ),
+        ),
       );
     }
     if (Platform.isIOS) {
@@ -210,119 +176,91 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
         navigationBar: CupertinoNavigationBar(
           middle: Text(widget.negozioOwner.nomeNegozio),
         ),
-        child: widget.isUtente
-            ? SafeArea(
-                child: SingleChildScrollView(
-                  child: Container(
-                    child: Column(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    color: Colors.white,
+                    margin: EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Container(
-                          color: Colors.white,
-                          margin: EdgeInsets.only(top: 10),
-                          child: Column(children: <Widget>[
-                            CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  widget.negozioOwner.photoProfile),
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                            ),
-                          ]),
-                        ),
-                        Container(
-                          height: 600,
-                          child: GridView.count(
-                            scrollDirection: Axis.vertical,
-                            crossAxisCount: 3,
-                            children:
-                                List.generate(listOfImage.length, (index) {
-                              return CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: listOfImage[index],
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return PostPage(title: "Post");
-                                        },
-                                        settings: RouteSettings(arguments: [
-                                          widget.isUtente ? utente : negozio,
-                                          listOfPosts[index],
-                                          widget.documentSnapshot
-                                        ]),
-                                      ));
-                                },
-                              );
-                            }),
+                        Column(children: <Widget>[
+                          CircleAvatar(
+                            backgroundImage:
+                                NetworkImage(widget.negozioOwner.photoProfile),
+                            radius: 80,
+                            backgroundColor: Colors.grey,
                           ),
-                        )
+                        ]),
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  widget.negozioOwner.citta,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                )),
+                            Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  widget.negozioOwner.via +
+                                      ", " +
+                                      widget.negozioOwner.numeroCivico
+                                          .toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                )),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                ),
-              )
-            : SafeArea(
-                child: SingleChildScrollView(
-                  child: Container(
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          color: Colors.white,
-                          margin: EdgeInsets.only(top: 10),
-                          child: Column(children: <Widget>[
-                            CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  widget.negozioOwner.photoProfile),
-                              radius: 80,
-                              backgroundColor: Colors.grey,
+                  Divider(),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    height: 600,
+                    child: GridView.count(
+                      scrollDirection: Axis.vertical,
+                      crossAxisCount: 3,
+                      children: List.generate(listOfImage.length, (index) {
+                        return CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: listOfImage[index],
+                              ),
                             ),
-                          ]),
-                        ),
-                        Container(
-                          height: 600,
-                          child: GridView.count(
-                            scrollDirection: Axis.vertical,
-                            crossAxisCount: 3,
-                            children:
-                                List.generate(listOfImage.length, (index) {
-                              return CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: listOfImage[index],
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return PostPage(title: "Post");
-                                        },
-                                        settings: RouteSettings(arguments: [
-                                          widget.isUtente ? utente : negozio,
-                                          listOfPosts[index],
-                                          widget.documentSnapshot
-                                        ]),
-                                      ));
-                                },
-                              );
-                            }),
                           ),
-                        )
-                      ],
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return PostPage(title: "Post");
+                                  },
+                                  settings: RouteSettings(arguments: [
+                                    widget.isUtente ? utente : negozio,
+                                    listOfPosts[index],
+                                    widget.documentSnapshot
+                                  ]),
+                                ));
+                          },
+                        );
+                      }),
                     ),
-                  ),
-                ),
+                  )
+                ],
               ),
+            ),
+          ),
+        ),
       );
     }
   }
