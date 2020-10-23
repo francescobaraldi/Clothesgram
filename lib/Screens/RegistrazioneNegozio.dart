@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Screens/ConfermaRegistrazione.dart';
+import 'package:Applicazione/Utils/MyDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
@@ -51,178 +52,57 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
     storage = FirebaseStorage.instance;
   }
 
-  Future<void> showDialogAlreadyExist() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Esiste già un account con questa email"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Esiste già un account con questa email"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-  }
-
-  Future<void> showDialogRequiredField(String value) {
-    return showCupertinoDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Attenzione"),
-            content: Text("Il campo \"" + value + "\" è obbligatorio"),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  Future<void> showDialogShortField(String value) {
-    return showCupertinoDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Attenzione"),
-            content: Text("Il campo \"" + value + "\" è troppo corto"),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  Future<void> showDialogNotNumeric(String value) {
-    return showCupertinoDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Attenzione"),
-            content: Text("Il campo \"" + value + "\" deve essere numerico"),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  Future<void> showDialogNotEgualPassword() {
-    return showCupertinoDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Attenzione"),
-            content: Text("Le password inserite non sono identiche"),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
   void controllaDati() {
     if (nomeNegozioController.text.isEmpty) {
-      showDialogRequiredField("Nome del negozio");
+      MyDialog.showDialogRequiredField(context, "Nome del negozio");
       return;
     }
     if (nomeNegozioController.text.length < 3) {
-      showDialogShortField("Nome del negozio");
+      MyDialog.showDialogShortField(context, "Nome del negozio");
       return;
     }
     if (cittaController.text.isEmpty) {
-      showDialogRequiredField("Città");
+      MyDialog.showDialogRequiredField(context, "Città");
       return;
     }
     if (cittaController.text.length < 3) {
-      showDialogShortField("Città");
+      MyDialog.showDialogShortField(context, "Città");
       return;
     }
     if (emailController.text.isEmpty) {
-      showDialogRequiredField("Email");
+      MyDialog.showDialogRequiredField(context, "Email");
       return;
     }
     if (emailController.text.length < 5) {
-      showDialogShortField("Email");
+      MyDialog.showDialogShortField(context, "Email");
       return;
     }
     if (viaController.text.isEmpty) {
-      showDialogRequiredField("Via");
+      MyDialog.showDialogRequiredField(context, "Via");
       return;
     }
     if (viaController.text.length < 3) {
-      showDialogShortField("Via");
+      MyDialog.showDialogShortField(context, "Via");
       return;
     }
     if (numeroCivicoController.text.isEmpty) {
-      showDialogRequiredField("Numero civico");
+      MyDialog.showDialogRequiredField(context, "Numero civico");
       return;
     }
     if (int.tryParse(numeroCivicoController.text) == null) {
-      showDialogNotNumeric("Numero civico");
+      MyDialog.showDialogNotNumeric(context, "Numero civico");
       return;
     }
     if (passwordController.text.isEmpty) {
-      showDialogRequiredField("Password");
+      MyDialog.showDialogRequiredField(context, "Password");
       return;
     }
     if (passwordController.text.length < 8) {
-      showDialogShortField("Password");
+      MyDialog.showDialogShortField(context, "Password");
       return;
     }
     if (passwordController.text != confermaPasswordController.text) {
-      showDialogNotEgualPassword();
+      MyDialog.showDialogNotEgualPassword(context);
       return;
     }
   }
@@ -246,7 +126,7 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        showDialogAlreadyExist();
+        MyDialog.showDialogAlreadyExist(context);
       }
     } catch (e) {
       print(e.toString());

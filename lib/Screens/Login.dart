@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Screens/HomePage.dart';
 import 'package:Applicazione/Screens/Registrazione.dart';
+import 'package:Applicazione/Utils/MyDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -34,131 +35,6 @@ class _LoginState extends State<Login> {
     _database = FirebaseFirestore.instance;
   }
 
-  Future<void> showDialogNotExist() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Non esiste un account con questa email"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Non esiste un account con questa email"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-  }
-
-  Future<void> showDialogError() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Email o password errati"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Email o password errati"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-  }
-
-  Future<void> showDialogEmailSent() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Email inviata correttamente"),
-              content: Text(
-                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Email inviata correttamente"),
-              content: Text(
-                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-  }
-
   Future<void> showDialogInsertEmailReset() async {
     return showDialog(
         context: context,
@@ -182,9 +58,9 @@ class _LoginState extends State<Login> {
                     await FirebaseAuth.instance.sendPasswordResetEmail(
                         email: emailRecuperoController.text);
                   } catch (e) {
-                    showDialogNotExist();
+                    MyDialog.showDialogNotExist(context);
                   }
-                  await showDialogEmailSent();
+                  await MyDialog.showDialogEmailSent(context);
                   Navigator.pop(context);
                 },
               ),
@@ -209,16 +85,16 @@ class _LoginState extends State<Login> {
       documentSnapshot =
           await _database.collection('utenti').doc(currentUser.uid).get();
       if (!documentSnapshot.exists) {
-        await showDialogError();
+        await MyDialog.showDialogError(context);
       } else {
         Navigator.pushNamed(context, HomePage.routeName,
             arguments: documentSnapshot);
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        showDialogNotExist();
+        MyDialog.showDialogNotExist(context);
       } else if (e.code == 'wrong-password') {
-        showDialogError();
+        MyDialog.showDialogError(context);
       }
     }
   }
@@ -399,9 +275,9 @@ class _LoginState extends State<Login> {
                             await FirebaseAuth.instance.sendPasswordResetEmail(
                                 email: emailRecuperoController.text);
                           } catch (e) {
-                            showDialogNotExist();
+                            MyDialog.showDialogNotExist(context);
                           }
-                          await showDialogEmailSent();
+                          await MyDialog.showDialogEmailSent(context);
                           Navigator.pop(context);
                         },
                       ),

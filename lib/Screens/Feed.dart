@@ -8,6 +8,7 @@ import 'package:Applicazione/Models/Post.dart';
 import 'package:Applicazione/Screens/DatiLogin.dart';
 import 'package:Applicazione/Screens/FirstPage.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
+import 'package:Applicazione/Utils/MyDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -146,88 +147,6 @@ class _FeedState extends State<Feed> {
     );
   }
 
-  Future<void> showDialogPostSaved() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Post salvato correttamente"),
-              content: Text("Il post è stato salvato!"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Post salvato correttamente"),
-              content: Text("Il post è stato salvato!"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-  }
-
-  Future<void> showDialogAlreadySaved() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Questo post è già stato salvato"),
-              content: Text("Non puoi salvare due volte lo stesso post"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Questo post è già stato salvato"),
-              content: Text("Non puoi salvare due volte lo stesso post"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-  }
-
   Future<void> _refresh() async {
     snapshot = await _database.collection('posts').get();
     if (posts != null) posts.clear();
@@ -317,7 +236,7 @@ class _FeedState extends State<Feed> {
                                         isEqualTo: posts[index].postId)
                                     .get();
                                 if (snapshot2.docs.isNotEmpty) {
-                                  showDialogAlreadySaved();
+                                  MyDialog.showDialogAlreadySaved(context);
                                 } else {
                                   await _database
                                       .collection('posts')
@@ -333,7 +252,7 @@ class _FeedState extends State<Feed> {
                                     'postSavedId': posts[index].postId,
                                     'postSavedUrl': posts[index].mediaUrl
                                   });
-                                  showDialogPostSaved();
+                                  MyDialog.showDialogPostSaved(context);
                                 }
                               }),
                         ],
@@ -483,7 +402,8 @@ class _FeedState extends State<Feed> {
                                               isEqualTo: posts[index].postId)
                                           .get();
                                       if (snapshot2.docs.isNotEmpty) {
-                                        showDialogAlreadySaved();
+                                        MyDialog.showDialogAlreadySaved(
+                                            context);
                                       } else {
                                         await _database
                                             .collection('posts')
@@ -500,7 +420,7 @@ class _FeedState extends State<Feed> {
                                           'postSavedId': posts[index].postId,
                                           'postSavedUrl': posts[index].mediaUrl
                                         });
-                                        showDialogPostSaved();
+                                        MyDialog.showDialogPostSaved(context);
                                       }
                                     })
                               ],

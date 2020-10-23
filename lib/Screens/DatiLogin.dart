@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Screens/HomePage.dart';
+import 'package:Applicazione/Utils/MyDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -33,90 +34,6 @@ class _DatiLoginState extends State<DatiLogin> {
     super.initState();
     _database = FirebaseFirestore.instance;
     auth = FirebaseAuth.instance;
-  }
-
-  Future<void> showDialogAlreadyExist() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Esiste già un account con questa email"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Esiste già un account con questa email"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-  }
-
-  Future<void> showDialogEmailSent() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Email inviata correttamente"),
-              content: Text(
-                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Email inviata correttamente"),
-              content: Text(
-                  "Abbiamo inviato una mail di recupero password al tuo indirizzo di posta, controlla la tua casella in entrata"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
   }
 
   Widget build(BuildContext context) {
@@ -180,7 +97,7 @@ class _DatiLoginState extends State<DatiLogin> {
                         currentUser.updateEmail(emailController.text);
                       } catch (e) {
                         if (e.code == 'email-already-in-use') {
-                          showDialogAlreadyExist();
+                          MyDialog.showDialogAlreadyExist(context);
                         } else {
                           print(e.toString());
                         }
@@ -208,7 +125,7 @@ class _DatiLoginState extends State<DatiLogin> {
                         onPressed: () async {
                           await FirebaseAuth.instance.sendPasswordResetEmail(
                               email: auth.currentUser.email);
-                          await showDialogEmailSent();
+                          await MyDialog.showDialogEmailSent(context);
                           if (isUtente) {
                             documentSnapshot = await _database
                                 .collection('utenti')
@@ -286,7 +203,7 @@ class _DatiLoginState extends State<DatiLogin> {
                         currentUser.updateEmail(emailController.text);
                       } catch (e) {
                         if (e.code == 'email-already-in-use') {
-                          showDialogAlreadyExist();
+                          MyDialog.showDialogAlreadyExist(context);
                         } else {
                           print(e.toString());
                         }
@@ -314,7 +231,7 @@ class _DatiLoginState extends State<DatiLogin> {
                         onPressed: () async {
                           await FirebaseAuth.instance.sendPasswordResetEmail(
                               email: auth.currentUser.email);
-                          await showDialogEmailSent();
+                          await MyDialog.showDialogEmailSent(context);
                           if (isUtente) {
                             documentSnapshot = await _database
                                 .collection('utenti')

@@ -3,10 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Screens/ConfermaRegistrazione.dart';
+import 'package:Applicazione/Utils/MyDialog.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:Applicazione/showCupertinoDatePicker.dart';
+import 'package:Applicazione/Utils/showCupertinoDatePicker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
@@ -93,150 +94,49 @@ class _RegistrazioneState extends State<Registrazione> {
     });
   }
 
-  Future<void> showDialogAlreadyExist() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Esiste già un account con questa email"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Attenzione"),
-              content: Text("Esiste già un account con questa email"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-  }
-
-  Future<void> showDialogRequiredField(String value) {
-    return showCupertinoDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Attenzione"),
-            content: Text("Il campo \"" + value + "\" è obbligatorio"),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  Future<void> showDialogShortField(String value) {
-    return showCupertinoDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Attenzione"),
-            content: Text("Il campo \"" + value + "\" è troppo corto"),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  Future<void> showDialogNotEgualPassword() {
-    return showCupertinoDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Attenzione"),
-            content: Text("Le password inserite non sono identiche"),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
   void controllaDati() {
     if (nomeController.text.isEmpty) {
-      showDialogRequiredField("Nome");
+      MyDialog.showDialogRequiredField(context, "Nome");
       return;
     }
     if (nomeController.text.length < 3) {
-      showDialogShortField("Nome");
+      MyDialog.showDialogShortField(context, "Nome");
       return;
     }
     if (cognomeController.text.isEmpty) {
-      showDialogRequiredField("Cognome");
+      MyDialog.showDialogRequiredField(context, "Cognome");
       return;
     }
     if (cognomeController.text.length < 3) {
-      showDialogShortField("Cognome");
+      MyDialog.showDialogShortField(context, "Cognome");
       return;
     }
     if (emailController.text.isEmpty) {
-      showDialogRequiredField("Email");
+      MyDialog.showDialogRequiredField(context, "Email");
       return;
     }
     if (emailController.text.length < 5) {
-      showDialogShortField("Email");
+      MyDialog.showDialogShortField(context, "Email");
       return;
     }
     if (usernameController.text.isEmpty) {
-      showDialogRequiredField("Username");
+      MyDialog.showDialogRequiredField(context, "Username");
       return;
     }
     if (usernameController.text.length < 3) {
-      showDialogShortField("Username");
+      MyDialog.showDialogShortField(context, "Username");
       return;
     }
     if (passwordController.text.isEmpty) {
-      showDialogRequiredField("Password");
+      MyDialog.showDialogRequiredField(context, "Password");
       return;
     }
     if (passwordController.text.length < 8) {
-      showDialogShortField("Password");
+      MyDialog.showDialogShortField(context, "Password");
       return;
     }
     if (passwordController.text != confermaPasswordController.text) {
-      showDialogNotEgualPassword();
+      MyDialog.showDialogNotEgualPassword(context);
       return;
     }
   }
@@ -260,7 +160,7 @@ class _RegistrazioneState extends State<Registrazione> {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        showDialogAlreadyExist();
+        MyDialog.showDialogAlreadyExist(context);
       }
     } catch (e) {
       print(e.toString());
