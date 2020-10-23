@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Models/Post.dart';
+import 'package:Applicazione/Utils/MyDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
@@ -43,88 +44,6 @@ class _PostPageState extends State<PostPage> {
     _database = FirebaseFirestore.instance;
     auth = FirebaseAuth.instance;
     storage = FirebaseStorage.instance;
-  }
-
-  Future<void> showDialogPostSaved() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Post salvato correttamente"),
-              content: Text("Il post è stato salvato!"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Post salvato correttamente"),
-              content: Text("Il post è stato salvato!"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-  }
-
-  Future<void> showDialogAlreadySaved() async {
-    if (Platform.isAndroid) {
-      return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Questo post è già stato salvato"),
-              content: Text("Non puoi salvare due volte lo stesso post"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (Platform.isIOS) {
-      return showCupertinoDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text("Questo post è già stato salvato"),
-              content: Text("Non puoi salvare due volte lo stesso post"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
   }
 
   void getNegozio() async {
@@ -188,7 +107,7 @@ class _PostPageState extends State<PostPage> {
                             .where('postSavedId', isEqualTo: post.postId)
                             .get();
                         if (snapshot2.docs.isNotEmpty) {
-                          showDialogAlreadySaved();
+                          MyDialog.showDialogAlreadySaved(context);
                         } else {
                           await _database
                               .collection('posts')
@@ -202,7 +121,7 @@ class _PostPageState extends State<PostPage> {
                             'postSavedId': post.postId,
                             'postSavedUrl': post.mediaUrl
                           });
-                          showDialogPostSaved();
+                          MyDialog.showDialogPostSaved(context);
                         }
                       })
                   : CupertinoButton(
@@ -215,7 +134,7 @@ class _PostPageState extends State<PostPage> {
                             .where('postSavedId', isEqualTo: post.postId)
                             .get();
                         if (snapshot2.docs.isNotEmpty) {
-                          showDialogAlreadySaved();
+                          MyDialog.showDialogAlreadySaved(context);
                         } else {
                           await _database
                               .collection('posts')
@@ -229,7 +148,7 @@ class _PostPageState extends State<PostPage> {
                             'postSavedId': post.postId,
                             'postSavedUrl': post.mediaUrl
                           });
-                          showDialogPostSaved();
+                          MyDialog.showDialogPostSaved(context);
                         }
                       })
             ],

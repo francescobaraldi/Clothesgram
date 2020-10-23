@@ -4,10 +4,11 @@ import 'dart:io' show Platform;
 import 'package:Applicazione/Models/Utente.dart';
 import 'package:Applicazione/Models/Negozio.dart';
 import 'package:Applicazione/Screens/HomePage.dart';
+import 'package:Applicazione/Utils/MyDialog.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:Applicazione/showCupertinoDatePicker.dart';
+import 'package:Applicazione/Utils/showCupertinoDatePicker.dart';
 
 class Profilo extends StatefulWidget {
   static const String routeName = "/HomePage/Profilo";
@@ -53,124 +54,64 @@ class _ProfiloState extends State<Profilo> {
     auth = FirebaseAuth.instance;
   }
 
-  Future<void> showDialogRequiredField(String value) {
-    return showCupertinoDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Attenzione"),
-            content: Text("Il campo \"" + value + "\" è obbligatorio"),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  Future<void> showDialogShortField(String value) {
-    return showCupertinoDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Attenzione"),
-            content: Text("Il campo \"" + value + "\" è troppo corto"),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  Future<void> showDialogNotNumeric(String value) {
-    return showCupertinoDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Attenzione"),
-            content: Text("Il campo \"" + value + "\" deve essere numerico"),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
   void controllaDatiUtente() {
     if (nomeController.text.isEmpty) {
-      showDialogRequiredField("Nome");
+      MyDialog.showDialogRequiredField(context, "Nome");
       return;
     }
     if (nomeController.text.length < 3) {
-      showDialogShortField("Nome");
+      MyDialog.showDialogShortField(context, "Nome");
       return;
     }
     if (cognomeController.text.isEmpty) {
-      showDialogRequiredField("Cognome");
+      MyDialog.showDialogRequiredField(context, "Cognome");
       return;
     }
     if (cognomeController.text.length < 3) {
-      showDialogShortField("Cognome");
+      MyDialog.showDialogShortField(context, "Cognome");
       return;
     }
     if (usernameController.text.isEmpty) {
-      showDialogRequiredField("Username");
+      MyDialog.showDialogRequiredField(context, "Username");
       return;
     }
     if (usernameController.text.length < 3) {
-      showDialogShortField("Username");
+      MyDialog.showDialogShortField(context, "Username");
       return;
     }
   }
 
   void controllaDatiNegozio() {
     if (nomeNegozioController.text.isEmpty) {
-      showDialogRequiredField("Nome del negozio");
+      MyDialog.showDialogRequiredField(context, "Nome del negozio");
       return;
     }
     if (nomeNegozioController.text.length < 3) {
-      showDialogShortField("Nome del negozio");
+      MyDialog.showDialogShortField(context, "Nome del negozio");
       return;
     }
     if (cittaController.text.isEmpty) {
-      showDialogRequiredField("Città");
+      MyDialog.showDialogRequiredField(context, "Città");
       return;
     }
     if (cittaController.text.length < 3) {
-      showDialogShortField("Città");
+      MyDialog.showDialogShortField(context, "Città");
       return;
     }
     if (viaController.text.isEmpty) {
-      showDialogRequiredField("Via");
+      MyDialog.showDialogRequiredField(context, "Via");
       return;
     }
     if (viaController.text.length < 3) {
-      showDialogShortField("Via");
+      MyDialog.showDialogShortField(context, "Via");
       return;
     }
     if (numeroCivicoController.text.isEmpty) {
-      showDialogRequiredField("Numero civico");
+      MyDialog.showDialogRequiredField(context, "Numero civico");
       return;
     }
     if (int.tryParse(numeroCivicoController.text) == null) {
-      showDialogNotNumeric("Numero civico");
+      MyDialog.showDialogNotNumeric(context, "Numero civico");
       return;
     }
   }
