@@ -256,7 +256,7 @@ class _CreatePostState extends State<CreatePost> {
                     image: DecorationImage(
                       // fit: BoxFit.fill,
                       image: image == null
-                          ? AssetImage('contents/images/fotoProfilo.png')
+                          ? AssetImage('contents/images/fotoProfilo.jpg')
                           : image,
                     ),
                   ),
@@ -345,7 +345,7 @@ class _CreatePostState extends State<CreatePost> {
                     image: DecorationImage(
                       // fit: BoxFit.fill,
                       image: image == null
-                          ? AssetImage('contents/images/fotoProfilo.png')
+                          ? AssetImage('contents/images/fotoProfilo.jpg')
                           : image,
                     ),
                   ),
