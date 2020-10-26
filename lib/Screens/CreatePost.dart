@@ -290,12 +290,14 @@ class _CreatePostState extends State<CreatePost> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    decoration: InputDecoration(labelText: "Descrizione"),
                     controller: descrizioneController,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    decoration: InputDecoration(labelText: "Prezzo"),
                     controller: prezzoController,
                   ),
                 ),

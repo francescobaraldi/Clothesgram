@@ -7,7 +7,6 @@ import 'package:Applicazione/Models/Post.dart';
 import 'package:Applicazione/Screens/DatiLogin.dart';
 import 'package:Applicazione/Screens/FirstPage.dart';
 import 'package:Applicazione/Screens/PostPage.dart';
-import 'package:Applicazione/Screens/ProfiloPage.dart';
 import 'package:Applicazione/Screens/Profilo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -393,6 +392,7 @@ class _RicercaState extends State<Ricerca> {
                   children: <Widget>[
                     Expanded(
                       child: TextField(
+                        decoration: InputDecoration(labelText: "Ricerca"),
                         controller: searchController,
                       ),
                     ),
@@ -432,6 +432,7 @@ class _RicercaState extends State<Ricerca> {
                   children: <Widget>[
                     Expanded(
                       child: CupertinoTextField(
+                        placeholder: "Ricerca",
                         controller: searchController,
                       ),
                     ),
