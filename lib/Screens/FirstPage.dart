@@ -21,7 +21,7 @@ class FirstPage extends StatelessWidget {
         body: SafeArea(
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
                   width: 200,
