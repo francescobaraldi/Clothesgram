@@ -23,12 +23,24 @@ class FirstPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('contents/images/Flutter.jpeg'),
+                    ),
+                  ),
+                ),
                 Text("Benvenuto su Nome App!",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                         color: Colors.blue)),
-                Text("Come vuoi accere?"),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Come vuoi accere?"),
+                ),
                 RaisedButton(
                   child: Text("Utente"),
                   onPressed: () {
@@ -56,14 +68,26 @@ class FirstPage extends StatelessWidget {
         child: SafeArea(
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+                Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('contents/images/Flutter.jpeg'),
+                    ),
+                  ),
+                ),
                 Text("Benvenuto su Nome App!",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                         color: CupertinoColors.systemBlue)),
-                Text("Come vuoi accere?"),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Come vuoi accere?"),
+                ),
                 CupertinoButton(
                   child: Text("Utente"),
                   onPressed: () {
