@@ -9,6 +9,7 @@ class Post {
   final String photoProfileOwner;
   final String prezzo;
   final int numSalvati;
+  final DateTime dateCreated;
 
   Post(
       {this.ownerId,
@@ -18,9 +19,11 @@ class Post {
       this.nomeOwner,
       this.photoProfileOwner,
       this.prezzo,
-      this.numSalvati});
+      this.numSalvati,
+      this.dateCreated});
 
   factory Post.fromDocument(DocumentSnapshot documentSnapshot) {
+    Timestamp t = documentSnapshot.get('dateCreated');
     return Post(
       ownerId: documentSnapshot.get('ownerId'),
       descrizione: documentSnapshot.get('descrizione'),
@@ -30,6 +33,7 @@ class Post {
       photoProfileOwner: documentSnapshot.get('photoProfileOwner'),
       prezzo: documentSnapshot.get('prezzo'),
       numSalvati: documentSnapshot.get('numSalvati'),
+      dateCreated: t.toDate(),
     );
   }
 }
