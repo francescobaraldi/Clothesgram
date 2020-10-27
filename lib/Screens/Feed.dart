@@ -148,7 +148,10 @@ class _FeedState extends State<Feed> {
   }
 
   Future<void> _refresh() async {
-    snapshot = await _database.collection('posts').get();
+    snapshot = await _database
+        .collection('posts')
+        .orderBy('dateCreated', descending: true)
+        .get();
     if (posts != null) posts.clear();
     for (var i in snapshot.docs) {
       posts.add(Post.fromDocument(i));

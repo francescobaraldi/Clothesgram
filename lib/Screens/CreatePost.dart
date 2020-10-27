@@ -212,6 +212,7 @@ class _CreatePostState extends State<CreatePost> {
       'photoProfileOwner': negozio.photoProfile,
       'prezzo': prezzoController.text,
       'numSalvati': 0,
+      'dateCreated': DateTime.now(),
     }).then((value) {
       _database.collection('posts').doc(value.id).update({
         'postId': value.id,
