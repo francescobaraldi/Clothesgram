@@ -255,7 +255,8 @@ class _FeedState extends State<Feed> {
                                       .collection('postSaved')
                                       .add({
                                     'postSavedId': posts[index].postId,
-                                    'postSavedUrl': posts[index].mediaUrl
+                                    'postSavedUrl': posts[index].mediaUrl,
+                                    'dateCreated': posts[index].dateCreated,
                                   });
                                   MyDialog.showDialogPostSaved(context);
                                 }
@@ -433,7 +434,9 @@ class _FeedState extends State<Feed> {
                                             .collection('postSaved')
                                             .add({
                                           'postSavedId': posts[index].postId,
-                                          'postSavedUrl': posts[index].mediaUrl
+                                          'postSavedUrl': posts[index].mediaUrl,
+                                          'dateCreated':
+                                              posts[index].dateCreated,
                                         });
                                         MyDialog.showDialogPostSaved(context);
                                       }
