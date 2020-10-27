@@ -14,6 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+import 'package:intl/intl.dart';
 
 class Feed extends StatefulWidget {
   static const String routeName = "/HomePage/Feed";
@@ -21,6 +22,7 @@ class Feed extends StatefulWidget {
   final bool isUtente;
   final Object arg;
   final DocumentSnapshot documentSnapshot;
+  final DateFormat _df = DateFormat("EEE, dd/MM/yyyy");
 
   Feed({Key key, this.title, this.isUtente, this.arg, this.documentSnapshot})
       : super(key: key);
@@ -266,11 +268,16 @@ class _FeedState extends State<Feed> {
                           child: Image.network(posts[index].mediaUrl),
                         ),
                       ),
-                      Text(
-                          posts[index].descrizione +
-                              "  ---  € " +
-                              posts[index].prezzo,
-                          textAlign: TextAlign.start),
+                      Column(
+                        children: <Widget>[
+                          Text(
+                              posts[index].descrizione +
+                                  "  ---  € " +
+                                  posts[index].prezzo,
+                              textAlign: TextAlign.start),
+                          Text(widget._df.format(posts[index].dateCreated)),
+                        ],
+                      ),
                       Divider(),
                     ],
                   ),
@@ -317,11 +324,16 @@ class _FeedState extends State<Feed> {
                           child: Image.network(posts[index].mediaUrl),
                         ),
                       ),
-                      Text(
-                          posts[index].descrizione +
-                              "  ---  € " +
-                              posts[index].prezzo,
-                          textAlign: TextAlign.start),
+                      Column(
+                        children: <Widget>[
+                          Text(
+                              posts[index].descrizione +
+                                  "  ---  € " +
+                                  posts[index].prezzo,
+                              textAlign: TextAlign.start),
+                          Text(widget._df.format(posts[index].dateCreated)),
+                        ],
+                      ),
                       Divider(),
                     ],
                   ),
@@ -434,11 +446,17 @@ class _FeedState extends State<Feed> {
                                 child: Image.network(posts[index].mediaUrl),
                               ),
                             ),
-                            Text(
-                                posts[index].descrizione +
-                                    "  ---  € " +
-                                    posts[index].prezzo,
-                                textAlign: TextAlign.start),
+                            Column(
+                              children: <Widget>[
+                                Text(
+                                    posts[index].descrizione +
+                                        "  ---  € " +
+                                        posts[index].prezzo,
+                                    textAlign: TextAlign.start),
+                                Text(widget._df
+                                    .format(posts[index].dateCreated)),
+                              ],
+                            ),
                             Divider(),
                           ],
                         ),
@@ -487,11 +505,17 @@ class _FeedState extends State<Feed> {
                                 child: Image.network(posts[index].mediaUrl),
                               ),
                             ),
-                            Text(
-                                posts[index].descrizione +
-                                    "  ---  € " +
-                                    posts[index].prezzo,
-                                textAlign: TextAlign.start),
+                            Column(
+                              children: <Widget>[
+                                Text(
+                                    posts[index].descrizione +
+                                        "  ---  € " +
+                                        posts[index].prezzo,
+                                    textAlign: TextAlign.start),
+                                Text(widget._df
+                                    .format(posts[index].dateCreated)),
+                              ],
+                            ),
                             Divider(),
                           ],
                         ),
