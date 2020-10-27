@@ -185,8 +185,12 @@ class _ProfiloPageState extends State<ProfiloPage> {
           .collection('utenti')
           .doc(auth.currentUser.uid)
           .collection('postSaved')
+          .orderBy('dateCreated', descending: true)
           .get();
-      snapshotPost = await _database.collection('posts').get();
+      snapshotPost = await _database
+          .collection('posts')
+          .orderBy('dateCreated', descending: true)
+          .get();
       listOfImage.clear();
       for (var i in snapshot.docs) {
         listOfImage.add(NetworkImage(i.get('postSavedUrl')));
@@ -198,7 +202,9 @@ class _ProfiloPageState extends State<ProfiloPage> {
       }
       for (var i in listOfPosts) {
         for (var j in snapshot.docs) {
-          if (i.postId == j.get('postSavedId')) trovato = true;
+          if (i.postId == j.get('postSavedId')) {
+            trovato = true;
+          }
         }
         if (trovato == false) listOfPosts.remove(i);
       }
@@ -280,6 +286,9 @@ class _ProfiloPageState extends State<ProfiloPage> {
                           ]),
                         ),
                         Divider(),
+                        Text("I tuoi post salvati",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20)),
                         Container(
                           padding: EdgeInsets.only(top: 16),
                           height: 600,
@@ -350,6 +359,9 @@ class _ProfiloPageState extends State<ProfiloPage> {
                           ]),
                         ),
                         Divider(),
+                        Text("I tuoi post pubblicati",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20)),
                         Container(
                           padding: EdgeInsets.only(top: 16),
                           height: 600,
@@ -435,6 +447,9 @@ class _ProfiloPageState extends State<ProfiloPage> {
                           ]),
                         ),
                         Divider(),
+                        Text("I tuoi post salvati",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20)),
                         Container(
                           padding: EdgeInsets.only(top: 16),
                           height: 600,
@@ -505,6 +520,9 @@ class _ProfiloPageState extends State<ProfiloPage> {
                           ]),
                         ),
                         Divider(),
+                        Text("I tuoi post pubblicati",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20)),
                         Container(
                           padding: EdgeInsets.only(top: 16),
                           height: 600,

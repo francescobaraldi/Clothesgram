@@ -119,7 +119,8 @@ class _PostPageState extends State<PostPage> {
                               .collection('postSaved')
                               .add({
                             'postSavedId': post.postId,
-                            'postSavedUrl': post.mediaUrl
+                            'postSavedUrl': post.mediaUrl,
+                            'dateCreated': post.dateCreated,
                           });
                           MyDialog.showDialogPostSaved(context);
                         }
@@ -146,7 +147,8 @@ class _PostPageState extends State<PostPage> {
                               .collection('postSaved')
                               .add({
                             'postSavedId': post.postId,
-                            'postSavedUrl': post.mediaUrl
+                            'postSavedUrl': post.mediaUrl,
+                            'dateCreated': post.dateCreated,
                           });
                           MyDialog.showDialogPostSaved(context);
                         }

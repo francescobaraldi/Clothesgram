@@ -133,6 +133,9 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
                     ),
                   ),
                   Divider(),
+                  Text("I post di " + widget.negozioOwner.nomeNegozio,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                   Container(
                     padding: EdgeInsets.all(16),
                     height: 600,
@@ -225,6 +228,9 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
                     ),
                   ),
                   Divider(),
+                  Text("I post di " + widget.negozioOwner.nomeNegozio,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                   Container(
                     padding: EdgeInsets.all(16),
                     height: 600,
