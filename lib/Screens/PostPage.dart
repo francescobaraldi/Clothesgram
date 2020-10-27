@@ -9,12 +9,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
-
+import 'package:intl/intl.dart';
 import 'ProfiloPageEsterno.dart';
 
 class PostPage extends StatefulWidget {
   static const String routeName = "/HomePage/PostPage";
   final String title;
+  final DateFormat _df = DateFormat("EEE, dd/MM/yyyy");
 
   PostPage({
     Key key,
@@ -161,8 +162,13 @@ class _PostPageState extends State<PostPage> {
               child: Image.network(post.mediaUrl),
             ),
           ),
-          Text(post.descrizione + "  ---  € " + post.prezzo,
-              textAlign: TextAlign.start),
+          Column(
+            children: [
+              Text(post.descrizione + "  ---  € " + post.prezzo,
+                  textAlign: TextAlign.start),
+              Text(widget._df.format(post.dateCreated)),
+            ],
+          ),
         ],
       ),
     );
@@ -209,8 +215,13 @@ class _PostPageState extends State<PostPage> {
               child: Image.network(post.mediaUrl),
             ),
           ),
-          Text(post.descrizione + "  ---  € " + post.prezzo,
-              textAlign: TextAlign.start),
+          Column(
+            children: <Widget>[
+              Text(post.descrizione + "  ---  € " + post.prezzo,
+                  textAlign: TextAlign.start),
+              Text(widget._df.format(post.dateCreated)),
+            ],
+          ),
         ],
       ),
     );
