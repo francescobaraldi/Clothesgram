@@ -56,7 +56,10 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
   }
 
   void getImages() async {
-    snapshot = await _database.collection('posts').get();
+    snapshot = await _database
+        .collection('posts')
+        .orderBy('dateCreated', descending: true)
+        .get();
     listOfPosts.clear();
     for (var i in snapshot.docs) {
       listOfPosts.add(Post.fromDocument(i));
