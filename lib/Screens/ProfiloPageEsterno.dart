@@ -97,37 +97,38 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Column(children: <Widget>[
-                          CircleAvatar(
-                            backgroundImage: image == null
-                                ? NetworkImage(widget.negozioOwner.photoProfile)
-                                : image,
-                            radius: 80,
-                            backgroundColor: Colors.grey,
+                        CircleAvatar(
+                          backgroundImage: image == null
+                              ? NetworkImage(widget.negozioOwner.photoProfile)
+                              : image,
+                          radius: 80,
+                          backgroundColor: Colors.grey,
+                        ),
+                        Flexible(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    widget.negozioOwner.citta,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  )),
+                              Container(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    widget.negozioOwner.via +
+                                        ", " +
+                                        widget.negozioOwner.numeroCivico
+                                            .toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  )),
+                            ],
                           ),
-                        ]),
-                        Column(
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.all(8),
-                                child: Text(
-                                  widget.negozioOwner.citta,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                )),
-                            Padding(
-                                padding: EdgeInsets.all(8),
-                                child: Text(
-                                  widget.negozioOwner.via +
-                                      ", " +
-                                      widget.negozioOwner.numeroCivico
-                                          .toString(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                )),
-                          ],
                         ),
                       ],
                     ),
@@ -194,36 +195,39 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Column(children: <Widget>[
-                          CircleAvatar(
-                            backgroundImage:
-                                NetworkImage(widget.negozioOwner.photoProfile),
-                            radius: 80,
-                            backgroundColor: Colors.grey,
-                          ),
-                        ]),
-                        Column(
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.all(8),
+                        CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(widget.negozioOwner.photoProfile),
+                          radius: 80,
+                          backgroundColor: Colors.grey,
+                        ),
+                        Flexible(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   widget.negozioOwner.citta,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16),
-                                )),
-                            Padding(
-                                padding: EdgeInsets.all(8),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   widget.negozioOwner.via +
                                       ", " +
                                       widget.negozioOwner.numeroCivico
                                           .toString(),
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16),
-                                )),
-                          ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
