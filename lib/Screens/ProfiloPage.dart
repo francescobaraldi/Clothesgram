@@ -302,6 +302,7 @@ class _ProfiloPageState extends State<ProfiloPage> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
+                                      fit: BoxFit.fill,
                                       image: listOfImage[index],
                                     ),
                                   ),
@@ -375,6 +376,7 @@ class _ProfiloPageState extends State<ProfiloPage> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
+                                      fit: BoxFit.fill,
                                       image: listOfImage[index],
                                     ),
                                   ),
@@ -463,6 +465,7 @@ class _ProfiloPageState extends State<ProfiloPage> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
+                                      fit: BoxFit.fill,
                                       image: listOfImage[index],
                                     ),
                                   ),
@@ -536,6 +539,7 @@ class _ProfiloPageState extends State<ProfiloPage> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
+                                      fit: BoxFit.fill,
                                       image: listOfImage[index],
                                     ),
                                   ),

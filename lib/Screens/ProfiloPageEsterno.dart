@@ -148,6 +148,7 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
                           child: Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
+                                fit: BoxFit.fill,
                                 image: listOfImage[index],
                               ),
                             ),
@@ -243,6 +244,7 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
                           child: Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
+                                fit: BoxFit.fill,
                                 image: listOfImage[index],
                               ),
                             ),

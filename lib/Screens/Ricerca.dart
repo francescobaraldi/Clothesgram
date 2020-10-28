@@ -155,7 +155,10 @@ class _RicercaState extends State<Ricerca> {
         .collection('negozi')
         .where('nomeNegozio', isEqualTo: searchController.text)
         .get();
-    snapshotPost = await _database.collection('posts').get();
+    snapshotPost = await _database
+        .collection('posts')
+        .orderBy('dateCreated', descending: true)
+        .get();
     listPostTemp.clear();
     for (var i in snapshotPost.docs) {
       listPostTemp.add(Post.fromDocument(i));
