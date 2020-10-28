@@ -62,10 +62,8 @@ class _ProfiloPageEsternoState extends State<ProfiloPageEsterno> {
         .get();
     listOfPosts.clear();
     for (var i in snapshot.docs) {
-      listOfPosts.add(Post.fromDocument(i));
-    }
-    for (var i in listOfPosts) {
-      if (i.ownerId != widget.negozioOwner.documentId) listOfPosts.remove(i);
+      if (i.get('ownerId') == widget.negozioOwner.documentId)
+        listOfPosts.add(Post.fromDocument(i));
     }
     listOfImage.clear();
     for (var i in listOfPosts) {

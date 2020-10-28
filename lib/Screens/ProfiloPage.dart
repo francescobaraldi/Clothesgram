@@ -205,10 +205,8 @@ class _ProfiloPageState extends State<ProfiloPage> {
           .get();
       listOfPosts.clear();
       for (var i in snapshot.docs) {
-        listOfPosts.add(Post.fromDocument(i));
-      }
-      for (var i in listOfPosts) {
-        if (i.ownerId != auth.currentUser.uid) listOfPosts.remove(i);
+        if (i.get('ownerId') == auth.currentUser.uid)
+          listOfPosts.add(Post.fromDocument(i));
       }
       listOfImage.clear();
       for (var i in listOfPosts) {
