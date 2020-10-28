@@ -187,26 +187,16 @@ class _ProfiloPageState extends State<ProfiloPage> {
           .collection('postSaved')
           .orderBy('dateCreated', descending: true)
           .get();
-      snapshotPost = await _database
-          .collection('posts')
-          .orderBy('dateCreated', descending: true)
-          .get();
       listOfImage.clear();
       for (var i in snapshot.docs) {
         listOfImage.add(NetworkImage(i.get('postSavedUrl')));
       }
-      bool trovato = false;
       listOfPosts.clear();
-      for (var i in snapshotPost.docs) {
-        listOfPosts.add(Post.fromDocument(i));
-      }
-      for (var i in listOfPosts) {
-        for (var j in snapshot.docs) {
-          if (i.postId == j.get('postSavedId')) {
-            trovato = true;
-          }
-        }
-        if (trovato == false) listOfPosts.remove(i);
+      for (var i in snapshot.docs) {
+        listOfPosts.add(Post.fromDocument(await _database
+            .collection('posts')
+            .doc(i.get('postSavedId'))
+            .get()));
       }
     } else {
       snapshot = await _database
