@@ -25,14 +25,13 @@ class MyApp extends StatelessWidget {
     if (Platform.isAndroid) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'App Demo',
         theme: ThemeData(
           primaryColor: Colors.blue,
         ),
         routes: <String, WidgetBuilder>{
           FirstPage.routeName: (context) => FirstPage(title: "Nome App"),
           Login.routeName: (context) => Login(title: "Nome App"),
-          LoginNegozio.routeName: (context) => LoginNegozio(title: "NomeApp"),
+          LoginNegozio.routeName: (context) => LoginNegozio(title: "Nome App"),
           Registrazione.routeName: (context) =>
               Registrazione(title: "Registrazione"),
           RegistrazioneNegozio.routeName: (context) =>
@@ -48,9 +47,8 @@ class MyApp extends StatelessWidget {
     if (Platform.isIOS) {
       return CupertinoApp(
         debugShowCheckedModeBanner: false,
-        title: 'App Demo',
         theme: CupertinoThemeData(
-          primaryColor: Colors.blue,
+          primaryColor: CupertinoColors.activeBlue,
         ),
         routes: <String, WidgetBuilder>{
           FirstPage.routeName: (context) => FirstPage(title: "Nome App"),

@@ -141,7 +141,7 @@ class _LoginState extends State<Login> {
     if (Platform.isAndroid) {
       return <Widget>[
         Text(
-          "Effettua il login",
+          "Effettua il login come utente",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           textAlign: TextAlign.center,
         ),
@@ -160,51 +160,52 @@ class _LoginState extends State<Login> {
           child: Text("Accedi"),
           onPressed: isLoginDisabled ? null : _loginPressed,
         ),
+        Divider(),
         RaisedButton(
             child: Text("Password dimenticata?"),
             onPressed: () async {
               await showDialogInsertEmailReset();
             }),
         Divider(),
-        RaisedButton(
-          child: Text("Accedi con Google"),
-          onPressed: () async {
-            User currentUser = await signInWithGoogle();
-            List<String> nomi = currentUser.displayName.split(" ");
-            String username =
-                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
-            await _database.collection('utenti').doc(currentUser.uid).set({
-              'nome': nomi[0],
-              'cognome': nomi[1],
-              'data_nascita': Timestamp.fromDate(DateTime.now()),
-              'username': username,
-            });
-            documentSnapshot =
-                await _database.collection('utenti').doc(currentUser.uid).get();
-            Navigator.pushNamed(context, HomePage.routeName,
-                arguments: documentSnapshot);
-          },
-        ),
-        RaisedButton(
-          child: Text("Accedi con Facebook"),
-          onPressed: () async {
-            User currentUser = await signInWithFacebook();
-            List<String> nomi = currentUser.displayName.split(" ");
-            String username =
-                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
-            await _database.collection('utenti').doc(currentUser.uid).set({
-              'nome': nomi[0],
-              'cognome': nomi[1],
-              'data_nascita': Timestamp.fromDate(DateTime.now()),
-              'username': username,
-            });
-            documentSnapshot =
-                await _database.collection('utenti').doc(currentUser.uid).get();
-            Navigator.pushNamed(context, HomePage.routeName,
-                arguments: documentSnapshot);
-          },
-        ),
-        Divider(),
+        // RaisedButton(
+        //   child: Text("Accedi con Google"),
+        //   onPressed: () async {
+        //     User currentUser = await signInWithGoogle();
+        //     List<String> nomi = currentUser.displayName.split(" ");
+        //     String username =
+        //         currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+        //     await _database.collection('utenti').doc(currentUser.uid).set({
+        //       'nome': nomi[0],
+        //       'cognome': nomi[1],
+        //       'data_nascita': Timestamp.fromDate(DateTime.now()),
+        //       'username': username,
+        //     });
+        //     documentSnapshot =
+        //         await _database.collection('utenti').doc(currentUser.uid).get();
+        //     Navigator.pushNamed(context, HomePage.routeName,
+        //         arguments: documentSnapshot);
+        //   },
+        // ),
+        // RaisedButton(
+        //   child: Text("Accedi con Facebook"),
+        //   onPressed: () async {
+        //     User currentUser = await signInWithFacebook();
+        //     List<String> nomi = currentUser.displayName.split(" ");
+        //     String username =
+        //         currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+        //     await _database.collection('utenti').doc(currentUser.uid).set({
+        //       'nome': nomi[0],
+        //       'cognome': nomi[1],
+        //       'data_nascita': Timestamp.fromDate(DateTime.now()),
+        //       'username': username,
+        //     });
+        //     documentSnapshot =
+        //         await _database.collection('utenti').doc(currentUser.uid).get();
+        //     Navigator.pushNamed(context, HomePage.routeName,
+        //         arguments: documentSnapshot);
+        //   },
+        // ),
+        // Divider(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -218,6 +219,7 @@ class _LoginState extends State<Login> {
                     Navigator.pushNamed(context, Registrazione.routeName)),
           ],
         ),
+        Divider(),
       ];
     }
     if (Platform.isIOS) {
@@ -225,7 +227,7 @@ class _LoginState extends State<Login> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            "Effettua il login",
+            "Effettua il login come utente",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             textAlign: TextAlign.center,
           ),
@@ -253,6 +255,7 @@ class _LoginState extends State<Login> {
           child: Text("Accedi"),
           onPressed: isLoginDisabled ? null : _loginPressed,
         ),
+        Divider(),
         CupertinoButton(
           child: Text("Password dimenticata?"),
           onPressed: () async {
@@ -287,46 +290,46 @@ class _LoginState extends State<Login> {
           },
         ),
         Divider(),
-        CupertinoButton.filled(
-          child: Text("Accedi con Google"),
-          onPressed: () async {
-            User currentUser = await signInWithGoogle();
-            List<String> nomi = currentUser.displayName.split(" ");
-            String username =
-                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
-            await _database.collection('utenti').doc(currentUser.uid).set({
-              'nome': nomi[0],
-              'cognome': nomi[1],
-              'data_nascita': Timestamp.fromDate(DateTime.now()),
-              'username': username,
-            });
-            documentSnapshot =
-                await _database.collection('utenti').doc(currentUser.uid).get();
-            Navigator.pushNamed(context, HomePage.routeName,
-                arguments: documentSnapshot);
-          },
-        ),
-        Padding(padding: EdgeInsets.all(8)),
-        CupertinoButton.filled(
-          child: Text("Accedi con Facebook"),
-          onPressed: () async {
-            User currentUser = await signInWithFacebook();
-            List<String> nomi = currentUser.displayName.split(" ");
-            String username =
-                currentUser.displayName.toLowerCase().replaceAll(r" ", "");
-            await _database.collection('utenti').doc(currentUser.uid).set({
-              'nome': nomi[0],
-              'cognome': nomi[1],
-              'data_nascita': Timestamp.fromDate(DateTime.now()),
-              'username': username,
-            });
-            documentSnapshot =
-                await _database.collection('utenti').doc(currentUser.uid).get();
-            Navigator.pushNamed(context, HomePage.routeName,
-                arguments: documentSnapshot);
-          },
-        ),
-        Divider(),
+        // CupertinoButton.filled(
+        //   child: Text("Accedi con Google"),
+        //   onPressed: () async {
+        //     User currentUser = await signInWithGoogle();
+        //     List<String> nomi = currentUser.displayName.split(" ");
+        //     String username =
+        //         currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+        //     await _database.collection('utenti').doc(currentUser.uid).set({
+        //       'nome': nomi[0],
+        //       'cognome': nomi[1],
+        //       'data_nascita': Timestamp.fromDate(DateTime.now()),
+        //       'username': username,
+        //     });
+        //     documentSnapshot =
+        //         await _database.collection('utenti').doc(currentUser.uid).get();
+        //     Navigator.pushNamed(context, HomePage.routeName,
+        //         arguments: documentSnapshot);
+        //   },
+        // ),
+        // Padding(padding: EdgeInsets.all(8)),
+        // CupertinoButton.filled(
+        //   child: Text("Accedi con Facebook"),
+        //   onPressed: () async {
+        //     User currentUser = await signInWithFacebook();
+        //     List<String> nomi = currentUser.displayName.split(" ");
+        //     String username =
+        //         currentUser.displayName.toLowerCase().replaceAll(r" ", "");
+        //     await _database.collection('utenti').doc(currentUser.uid).set({
+        //       'nome': nomi[0],
+        //       'cognome': nomi[1],
+        //       'data_nascita': Timestamp.fromDate(DateTime.now()),
+        //       'username': username,
+        //     });
+        //     documentSnapshot =
+        //         await _database.collection('utenti').doc(currentUser.uid).get();
+        //     Navigator.pushNamed(context, HomePage.routeName,
+        //         arguments: documentSnapshot);
+        //   },
+        // ),
+        // Divider(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -340,6 +343,7 @@ class _LoginState extends State<Login> {
                     Navigator.pushNamed(context, Registrazione.routeName)),
           ],
         ),
+        Divider(),
       ];
     }
   }

@@ -316,7 +316,7 @@ class _RegistrazioneState extends State<Registrazione> {
                     ],
                   ),
                   RaisedButton(
-                    child: Text("Avanti"),
+                    child: Text("Registrati"),
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
                         _formKey.currentState.save();
@@ -358,7 +358,6 @@ class _RegistrazioneState extends State<Registrazione> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Nome"),
                     placeholder: "Nome",
                     controller: nomeController,
                   ),
@@ -366,7 +365,6 @@ class _RegistrazioneState extends State<Registrazione> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Cognome"),
                     placeholder: "Cognome",
                     controller: cognomeController,
                   ),
@@ -374,7 +372,6 @@ class _RegistrazioneState extends State<Registrazione> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Email"),
                     placeholder: "Email",
                     controller: emailController,
                   ),
@@ -382,7 +379,6 @@ class _RegistrazioneState extends State<Registrazione> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Username"),
                     placeholder: "Username",
                     controller: usernameController,
                   ),
@@ -390,7 +386,6 @@ class _RegistrazioneState extends State<Registrazione> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Password"),
                     placeholder: "Password",
                     controller: passwordController,
                     obscureText: true,
@@ -399,7 +394,6 @@ class _RegistrazioneState extends State<Registrazione> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Conferma Password"),
                     placeholder: "Conferma Password",
                     controller: confermaPasswordController,
                     obscureText: true,
@@ -422,7 +416,7 @@ class _RegistrazioneState extends State<Registrazione> {
                   ],
                 ),
                 CupertinoButton(
-                  child: Text("Avanti"),
+                  child: Text("Registrati"),
                   onPressed: () async {
                     controllaDati();
                     utente.nome = nomeController.text;
