@@ -13,11 +13,6 @@ class FirstPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-          backgroundColor: Colors.blue,
-          automaticallyImplyLeading: false,
-        ),
         body: SafeArea(
           child: Center(
             child: Column(
@@ -32,11 +27,14 @@ class FirstPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text("Benvenuto su Nome App!",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: Colors.blue)),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: Text("Benvenuto su " + title + "!",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          color: Colors.blue)),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Come vuoi accere?"),
@@ -61,10 +59,6 @@ class FirstPage extends StatelessWidget {
     }
     if (Platform.isIOS) {
       return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          automaticallyImplyLeading: false,
-          middle: Text(title),
-        ),
         child: SafeArea(
           child: Center(
             child: Column(
@@ -79,11 +73,14 @@ class FirstPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text("Benvenuto su Nome App!",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: CupertinoColors.systemBlue)),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: Text("Benvenuto su " + title + "!",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          color: CupertinoColors.systemBlue)),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Come vuoi accere?"),

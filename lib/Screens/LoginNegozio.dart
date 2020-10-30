@@ -102,7 +102,7 @@ class _LoginNegozioState extends State<LoginNegozio> {
     if (Platform.isAndroid) {
       return <Widget>[
         Text(
-          "Effettua il login",
+          "Effettua il login come negozio",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           textAlign: TextAlign.center,
         ),
@@ -121,6 +121,7 @@ class _LoginNegozioState extends State<LoginNegozio> {
           child: Text("Accedi"),
           onPressed: isLoginDisabled ? null : _loginPressed,
         ),
+        Divider(),
         RaisedButton(
             child: Text("Password dimenticata?"),
             onPressed: () async {
@@ -140,6 +141,7 @@ class _LoginNegozioState extends State<LoginNegozio> {
                     context, RegistrazioneNegozio.routeName)),
           ],
         ),
+        Divider(),
       ];
     }
     if (Platform.isIOS) {
@@ -147,7 +149,7 @@ class _LoginNegozioState extends State<LoginNegozio> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            "Effettua il login",
+            "Effettua il login come negozio",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             textAlign: TextAlign.center,
           ),
@@ -175,6 +177,7 @@ class _LoginNegozioState extends State<LoginNegozio> {
           child: Text("Accedi"),
           onPressed: isLoginDisabled ? null : _loginPressed,
         ),
+        Divider(),
         CupertinoButton(
           child: Text("Password dimenticata?"),
           onPressed: () async {
@@ -222,6 +225,7 @@ class _LoginNegozioState extends State<LoginNegozio> {
                     context, RegistrazioneNegozio.routeName)),
           ],
         ),
+        Divider(),
       ];
     }
   }

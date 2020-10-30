@@ -278,7 +278,7 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                     obscureText: true,
                   ),
                   RaisedButton(
-                    child: Text("Avanti"),
+                    child: Text("Registrati"),
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
                         _formKey.currentState.save();
@@ -320,7 +320,6 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Nome negozio"),
                     placeholder: "Nome negozio",
                     controller: nomeNegozioController,
                   ),
@@ -328,7 +327,6 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Città"),
                     placeholder: "Città",
                     controller: cittaController,
                   ),
@@ -336,7 +334,6 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Via"),
                     placeholder: "Via",
                     controller: viaController,
                   ),
@@ -344,7 +341,6 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Numero civico"),
                     placeholder: "Numero civico",
                     controller: numeroCivicoController,
                   ),
@@ -352,7 +348,6 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Email"),
                     placeholder: "Email",
                     controller: emailController,
                   ),
@@ -360,7 +355,6 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Password"),
                     placeholder: "Password",
                     controller: passwordController,
                     obscureText: true,
@@ -369,14 +363,13 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
                 Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CupertinoTextField(
-                    prefix: Text("Conferma Password"),
                     placeholder: "Conferma Password",
                     controller: confermaPasswordController,
                     obscureText: true,
                   ),
                 ),
                 CupertinoButton(
-                  child: Text("Avanti"),
+                  child: Text("Registrati"),
                   onPressed: () async {
                     controllaDati();
                     negozio.nomeNegozio = nomeNegozioController.text;
