@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
       return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'App Demo',
         theme: ThemeData(
           primaryColor: Colors.blue,
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
     }
     if (Platform.isIOS) {
       return CupertinoApp(
+        debugShowCheckedModeBanner: false,
         title: 'App Demo',
         theme: CupertinoThemeData(
           primaryColor: Colors.blue,
