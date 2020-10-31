@@ -123,13 +123,11 @@ class _RegistrazioneNegozioState extends State<RegistrazioneNegozio> {
               email: emailController.text, password: passwordController.text);
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
+      if (e.code == 'email-already-in-use') {
         MyDialog.showDialogAlreadyExist(context);
+      } else {
+        print("Error with code: " + e.code);
       }
-    } catch (e) {
-      print(e.toString());
     }
     StorageTaskSnapshot storageTaskSnapshot;
     try {

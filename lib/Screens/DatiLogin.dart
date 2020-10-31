@@ -99,7 +99,7 @@ class _DatiLoginState extends State<DatiLogin> {
                         if (e.code == 'email-already-in-use') {
                           MyDialog.showDialogAlreadyExist(context);
                         } else {
-                          print(e.toString());
+                          print("Error with code: " + e.code);
                         }
                       }
                       if (isUtente) {
@@ -205,7 +205,7 @@ class _DatiLoginState extends State<DatiLogin> {
                         if (e.code == 'email-already-in-use') {
                           MyDialog.showDialogAlreadyExist(context);
                         } else {
-                          print(e.toString());
+                          print("Error with code: " + e.code);
                         }
                       }
                       if (isUtente) {

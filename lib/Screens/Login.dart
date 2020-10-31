@@ -95,6 +95,8 @@ class _LoginState extends State<Login> {
         MyDialog.showDialogNotExist(context);
       } else if (e.code == 'wrong-password') {
         MyDialog.showDialogError(context);
+      } else {
+        print("Error with code: " + e.code);
       }
     }
   }
