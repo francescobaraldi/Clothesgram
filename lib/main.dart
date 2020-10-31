@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           FirstPage.routeName: (context) => FirstPage(title: "Nome App"),
           Login.routeName: (context) => Login(title: "Nome App"),
-          LoginNegozio.routeName: (context) => LoginNegozio(title: "NomeApp"),
+          LoginNegozio.routeName: (context) => LoginNegozio(title: "Nome App"),
           Registrazione.routeName: (context) =>
               Registrazione(title: "Registrazione"),
           RegistrazioneNegozio.routeName: (context) =>
