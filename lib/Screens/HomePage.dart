@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
-import 'package:Applicazione/Models/Utente.dart';
-import 'package:Applicazione/Models/Negozio.dart';
-import 'package:Applicazione/Screens/Feed.dart';
-import 'package:Applicazione/Screens/Ricerca.dart';
-import 'package:Applicazione/Screens/CreatePost.dart';
-import 'package:Applicazione/Screens/ProfiloPage.dart';
+import 'package:Clothesgram/Models/Utente.dart';
+import 'package:Clothesgram/Models/Negozio.dart';
+import 'package:Clothesgram/Screens/Feed.dart';
+import 'package:Clothesgram/Screens/Ricerca.dart';
+import 'package:Clothesgram/Screens/CreatePost.dart';
+import 'package:Clothesgram/Screens/ProfiloPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
-import 'package:Applicazione/Screens/Login.dart';
-import 'package:Applicazione/Screens/LoginNegozio.dart';
+import 'package:Clothesgram/Screens/Login.dart';
+import 'package:Clothesgram/Screens/LoginNegozio.dart';
 
 class FirstPage extends StatelessWidget {
   static const String routeName = "/";

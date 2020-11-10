@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
-import 'package:Applicazione/Models/Utente.dart';
-import 'package:Applicazione/Models/Negozio.dart';
-import 'package:Applicazione/Screens/Login.dart';
-import 'package:Applicazione/Screens/LoginNegozio.dart';
+import 'package:Clothesgram/Models/Utente.dart';
+import 'package:Clothesgram/Models/Negozio.dart';
+import 'package:Clothesgram/Screens/Login.dart';
+import 'package:Clothesgram/Screens/LoginNegozio.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
