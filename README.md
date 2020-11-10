@@ -6,6 +6,7 @@ Applicazione mobile per iOS e Android sviluppata per il corso di programmazione 
 
 ### iOS
 
+![GitHub Logo](/contents/images/homeiOS.gif)
 ![GitHub Logo](/contents/images/paginainizialeiOS.png)
 ![GitHub Logo](/contents/images/profilopageiOS.png)
 ![GitHub Logo](/contents/images/postpageiOS.png)
@@ -14,5 +15,6 @@ Applicazione mobile per iOS e Android sviluppata per il corso di programmazione 
 
 ### Android
 
+![GitHub Logo](/contents/images/homeAndroid.gif)
 ![GitHub Logo](/contents/images/profilopageAndroid.png)
 ![GitHub Logo](/contents/images/createpostAndroid.png)
