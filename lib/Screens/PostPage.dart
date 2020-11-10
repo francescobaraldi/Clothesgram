@@ -166,7 +166,12 @@ class _PostPageState extends State<PostPage> {
             children: [
               Text(post.descrizione + "  ---  € " + post.prezzo,
                   textAlign: TextAlign.start),
-              Text(widget._df.format(post.dateCreated)),
+              Text(widget._df.format(post.dateCreated),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Platform.isIOS
+                          ? CupertinoColors.systemGrey
+                          : Colors.grey)),
             ],
           ),
         ],
@@ -219,7 +224,12 @@ class _PostPageState extends State<PostPage> {
             children: <Widget>[
               Text(post.descrizione + "  ---  € " + post.prezzo,
                   textAlign: TextAlign.start),
-              Text(widget._df.format(post.dateCreated)),
+              Text(widget._df.format(post.dateCreated),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Platform.isIOS
+                          ? CupertinoColors.systemGrey
+                          : Colors.grey)),
             ],
           ),
         ],

@@ -276,7 +276,9 @@ class _FeedState extends State<Feed> {
                                   "  ---  € " +
                                   posts[index].prezzo,
                               textAlign: TextAlign.start),
-                          Text(widget._df.format(posts[index].dateCreated)),
+                          Text(widget._df.format(posts[index].dateCreated),
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey)),
                         ],
                       ),
                       Divider(),
@@ -332,7 +334,9 @@ class _FeedState extends State<Feed> {
                                   "  ---  € " +
                                   posts[index].prezzo,
                               textAlign: TextAlign.start),
-                          Text(widget._df.format(posts[index].dateCreated)),
+                          Text(widget._df.format(posts[index].dateCreated),
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey)),
                         ],
                       ),
                       Divider(),
@@ -456,8 +460,11 @@ class _FeedState extends State<Feed> {
                                         "  ---  € " +
                                         posts[index].prezzo,
                                     textAlign: TextAlign.start),
-                                Text(widget._df
-                                    .format(posts[index].dateCreated)),
+                                Text(
+                                    widget._df.format(posts[index].dateCreated),
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: CupertinoColors.systemGrey)),
                               ],
                             ),
                             Divider(),
@@ -515,8 +522,11 @@ class _FeedState extends State<Feed> {
                                         "  ---  € " +
                                         posts[index].prezzo,
                                     textAlign: TextAlign.start),
-                                Text(widget._df
-                                    .format(posts[index].dateCreated)),
+                                Text(
+                                    widget._df.format(posts[index].dateCreated),
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: CupertinoColors.systemGrey)),
                               ],
                             ),
                             Divider(),
