@@ -13,6 +13,16 @@ Applicazione mobile per iOS e Android sviluppata per il corso di programmazione 
 ![GitHub Logo](/contents/images/postgiasalvatoiOS.png)
 ![GitHub Logo](/contents/images/ricercaiOS.png)
 
+<p>
+
+<img src="/contents/images/homeiOS.gif" alt="feed example" width="250">
+<img src="/contents/images/paginainizialeiOS.png" alt="upload photo example" width="250">
+<img src="/contents/images/profilopageiOS.png" alt="go to a profile from feed" width="250">
+<img src="/contents/images/postpageiOS.png" alt="edit profile example" width="250">
+<img src="/contents/images/postgiasalvatoiOS.png" alt="comment and activity feed example" width="250">
+
+</p>
+
 ### Android
 
 ![GitHub Logo](/contents/images/homeAndroid.gif)
