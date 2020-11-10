@@ -4,4 +4,3 @@ Applicazione mobile per iOS e Android sviluppata per il corso di programmazione 
 
 ## Anteprima
 ![GitHub Logo](/contents/images/paginainizialeiOS.png)
-Format: ![Alt Text](url)
