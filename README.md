@@ -1,16 +1,5 @@
-# Applicazione
+# Clothesgram
 
-A new Flutter project.
+Applicazione mobile per iOS e Android sviluppata per il corso di programmazione ad oggetti (OOP) del mio corso di laurea. Clothesgram permette ai negozi di abbigliamento di registrarsi in modalità **negozio** e pubblicare i propri capi. Gli utenti posso registrarsi invece in modalità **utente** e vedere tutti i capi pubblicati dai negozi registrati in una home feed comune. E' possibile inoltre per gli utenti poter salvare i capi che si preferiscono nel proprio profilo.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Anteprima
