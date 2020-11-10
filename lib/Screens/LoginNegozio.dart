@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
-import 'package:Applicazione/Screens/RegistrazioneNegozio.dart';
-import 'package:Applicazione/Screens/HomePage.dart';
-import 'package:Applicazione/Utils/MyDialog.dart';
+import 'package:Clothesgram/Screens/RegistrazioneNegozio.dart';
+import 'package:Clothesgram/Screens/HomePage.dart';
+import 'package:Clothesgram/Utils/MyDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

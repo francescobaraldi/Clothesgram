@@ -1,10 +1,10 @@
-import 'package:Applicazione/Screens/PostPage.dart';
+import 'package:Clothesgram/Screens/PostPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
-import 'package:Applicazione/Models/Utente.dart';
-import 'package:Applicazione/Models/Negozio.dart';
-import 'package:Applicazione/Models/Post.dart';
+import 'package:Clothesgram/Models/Utente.dart';
+import 'package:Clothesgram/Models/Negozio.dart';
+import 'package:Clothesgram/Models/Post.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';

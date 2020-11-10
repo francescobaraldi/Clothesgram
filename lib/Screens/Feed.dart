@@ -1,14 +1,14 @@
-import 'package:Applicazione/Screens/ProfiloPageEsterno.dart';
+import 'package:Clothesgram/Screens/ProfiloPageEsterno.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
-import 'package:Applicazione/Models/Utente.dart';
-import 'package:Applicazione/Models/Negozio.dart';
-import 'package:Applicazione/Models/Post.dart';
-import 'package:Applicazione/Screens/DatiLogin.dart';
-import 'package:Applicazione/Screens/FirstPage.dart';
-import 'package:Applicazione/Screens/Profilo.dart';
-import 'package:Applicazione/Utils/MyDialog.dart';
+import 'package:Clothesgram/Models/Utente.dart';
+import 'package:Clothesgram/Models/Negozio.dart';
+import 'package:Clothesgram/Models/Post.dart';
+import 'package:Clothesgram/Screens/DatiLogin.dart';
+import 'package:Clothesgram/Screens/FirstPage.dart';
+import 'package:Clothesgram/Screens/Profilo.dart';
+import 'package:Clothesgram/Utils/MyDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -364,7 +364,7 @@ class _FeedState extends State<Feed> {
         child: CustomScrollView(
           slivers: <Widget>[
             const CupertinoSliverNavigationBar(
-              largeTitle: Text("Nome App"),
+              largeTitle: Text("Clothesgram"),
             ),
             CupertinoSliverRefreshControl(
               onRefresh: _refresh,
