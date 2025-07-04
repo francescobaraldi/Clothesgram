@@ -1,2 +1,2 @@
-build/ios/Debug-iphonesimulator/FirebaseFirestore/FirebaseFirestore.framework/FirebaseFirestore filter=lfs diff=lfs merge=lfs -text
+
 build/ios/Debug-iphonesimulator/FirebaseFirestore/FirebaseFirestore.framework/FirebaseFirestore !text !filter !merge !diff
