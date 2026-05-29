@@ -47,3 +47,8 @@ app.*.map.json
 build/
 .dart_tool/
 .ios/
+
+# Build artifacts
+build/
+.dart_tool/
+.ios/
